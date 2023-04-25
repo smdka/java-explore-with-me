@@ -13,7 +13,14 @@
     <artifactId>service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
+
     <dependencies>
+        <dependency>
+            <groupId>ru.practicum</groupId>
+            <artifactId>dto</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-autoconfigure</artifactId>
@@ -21,15 +28,14 @@
         </dependency>
 
         <dependency>
-            <groupId>ru.practicum</groupId>
-            <artifactId>client</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <version>2.7.9</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-            <version>2.7.9</version>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
         <dependency>
@@ -52,6 +58,13 @@
             <scope>runtime</scope>
         </dependency>
     </dependencies>
-
-
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>2.7.11</version>
+            </plugin>
+        </plugins>
+    </build>
 </project>
