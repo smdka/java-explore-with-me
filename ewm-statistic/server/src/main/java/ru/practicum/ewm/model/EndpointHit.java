@@ -1,19 +1,9 @@
 package ru.practicum.ewm.model;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
@@ -29,15 +19,11 @@ public class EndpointHit {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Column(nullable = false, updatable = false)
     String app;
 
-    @Column(nullable = false, updatable = false)
     String uri;
 
-    @Column(nullable = false, updatable = false)
     String ip;
 
-    @Column(nullable = false, updatable = false)
     LocalDateTime timestamp;
 }

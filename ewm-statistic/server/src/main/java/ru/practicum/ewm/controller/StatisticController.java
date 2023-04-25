@@ -22,9 +22,9 @@ public class StatisticController {
 
     @PostMapping("hit")
     @ResponseStatus(HttpStatus.CREATED)
-    public EndpointHitDto post(@RequestBody @Valid EndpointHitDto endpointHitDto) {
+    public void post(@Valid @RequestBody EndpointHitDto endpointHitDto) {
         log.info("POST /hit");
-        return service.add(endpointHitDto);
+        service.add(endpointHitDto);
     }
 
     @GetMapping("stats")
