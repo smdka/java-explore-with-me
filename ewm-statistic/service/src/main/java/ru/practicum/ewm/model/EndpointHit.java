@@ -25,5 +25,6 @@ public class EndpointHit {
 
     String ip;
 
+    @Column(name = "ts")
     LocalDateTime timestamp;
 }

@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS endpoint_hit
     app       VARCHAR(255)                   NOT NULL,
     uri       VARCHAR(255)                   NOT NULL,
     ip        VARCHAR(255)                   NOT NULL,
-    timestamp TIMESTAMP(9) WITHOUT TIME ZONE NOT NULL,
+    ts TIMESTAMP(9) WITHOUT TIME ZONE NOT NULL,
     CONSTRAINT pk_endpoint_hit PRIMARY KEY (id)
 );
 
