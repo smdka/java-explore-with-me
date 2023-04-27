@@ -4,11 +4,11 @@ CREATE TABLE IF NOT EXISTS endpoint_hit
     app       VARCHAR(255)                   NOT NULL,
     uri       VARCHAR(255)                   NOT NULL,
     ip        VARCHAR(255)                   NOT NULL,
-    ts TIMESTAMP(9) WITHOUT TIME ZONE NOT NULL,
+    ts TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     CONSTRAINT pk_endpoint_hit PRIMARY KEY (id)
 );
 
-CREATE INDEX IF NOT EXISTS idx_endpoint_hit_timestamp ON endpoint_hit (timestamp);
+CREATE INDEX IF NOT EXISTS idx_endpoint_hit_timestamp ON endpoint_hit (ts);
 CREATE INDEX IF NOT EXISTS idx_endpoint_hit_uri ON endpoint_hit (uri);
 CREATE INDEX IF NOT EXISTS idx_endpoint_hit_app ON endpoint_hit (app);
 CREATE INDEX IF NOT EXISTS idx_endpoint_hit_ip ON endpoint_hit (ip);
