@@ -2,7 +2,7 @@ package ru.practicum.ewm.model;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import ru.practicum.ewm.EndpointHitDto;
+import ru.practicum.ewm.dto.EndpointHitDto;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class EndpointHitMapper {

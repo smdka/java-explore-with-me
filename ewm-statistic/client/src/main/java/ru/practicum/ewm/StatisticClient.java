@@ -5,6 +5,7 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.util.DefaultUriBuilderFactory;
+import ru.practicum.ewm.dto.EndpointHitDto;
 
 public class StatisticClient extends BaseClient {
     private static final String ENDPOINT = "/hit";

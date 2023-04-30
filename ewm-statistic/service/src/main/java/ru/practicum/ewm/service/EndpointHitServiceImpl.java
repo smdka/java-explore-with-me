@@ -3,8 +3,8 @@ package ru.practicum.ewm.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.ewm.EndpointHitDto;
-import ru.practicum.ewm.ViewStats;
+import ru.practicum.ewm.dto.EndpointHitDto;
+import ru.practicum.ewm.dto.ViewStatsDto;
 import ru.practicum.ewm.model.EndpointHitMapper;
 import ru.practicum.ewm.repository.EndpointHitRepository;
 
@@ -25,7 +25,7 @@ public class EndpointHitServiceImpl implements EndpointHitService {
     }
 
     @Override
-    public Collection<ViewStats> get(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
+    public Collection<ViewStatsDto> get(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
         if (unique) {
             return isEmptyOrNull(uris)
                     ? repository.findByDateUniqueIp(start, end)
