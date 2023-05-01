@@ -24,6 +24,7 @@ public class StatisticController {
     @ResponseStatus(HttpStatus.CREATED)
     public void post(@Valid @RequestBody EndpointHitDto endpointHitDto) {
         log.info("POST /hit");
+        log.info("Request body: {}", endpointHitDto);
         service.add(endpointHitDto);
     }
 
@@ -32,7 +33,11 @@ public class StatisticController {
                                         @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime end,
                                         @RequestParam(required = false) List<String> uris,
                                         @RequestParam(defaultValue = "false") Boolean unique) {
-        log.info(String.format("GET /stats?start=%s&end=%s&uris=%s&unique=%s", start, end, uris, unique));
-        return service.get(start, end, uris, unique);
+        log.info("GET /stats?start={}&end={}&uris={}&unique={}", start, end, uris, unique);
+
+        Collection<ViewStatsDto> response = service.get(start, end, uris, unique);
+
+        log.info("Response: {}", response);
+        return response;
     }
 }
