@@ -1,26 +1,14 @@
 package ru.practicum.ewm.model;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.factory.Mappers;
 import ru.practicum.ewm.dto.EndpointHitDto;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class EndpointHitMapper {
+@Mapper
+public interface EndpointHitMapper {
+    EndpointHitMapper INSTANCE = Mappers.getMapper(EndpointHitMapper.class);
 
-    public static EndpointHit toModel(EndpointHitDto endpointHitDto) {
-        EndpointHit endpointHit = new EndpointHit();
-        endpointHit.setIp(endpointHitDto.getIp());
-        endpointHit.setApp(endpointHitDto.getApp());
-        endpointHit.setUri(endpointHitDto.getUri());
-        endpointHit.setTimestamp(endpointHitDto.getTimestamp());
-        return endpointHit;
-    }
-
-
-    public static EndpointHitDto toDto(EndpointHit endpointHit) {
-        return new EndpointHitDto(endpointHit.getApp(),
-                endpointHit.getUri(),
-                endpointHit.getIp(),
-                endpointHit.getTimestamp());
-    }
+    @Mapping(target = "id", ignore = true)
+    EndpointHit toModel(EndpointHitDto endpointHitDto);
 }

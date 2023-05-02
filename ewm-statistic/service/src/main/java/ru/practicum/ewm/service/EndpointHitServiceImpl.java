@@ -21,11 +21,11 @@ public class EndpointHitServiceImpl implements EndpointHitService {
     @Override
     @Transactional
     public void add(EndpointHitDto endpointHitDto) {
-        repository.save(EndpointHitMapper.toModel(endpointHitDto));
+        repository.save(EndpointHitMapper.INSTANCE.toModel(endpointHitDto));
     }
 
     @Override
-    public Collection<ViewStatsDto> get(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
+    public Collection<ViewStatsDto> get(LocalDateTime start, LocalDateTime end, List<String> uris, boolean unique) {
         if (unique) {
             return isEmptyOrNull(uris)
                     ? repository.findByDateUniqueIp(start, end)
