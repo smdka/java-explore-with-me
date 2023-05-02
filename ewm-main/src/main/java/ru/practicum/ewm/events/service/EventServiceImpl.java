@@ -11,13 +11,13 @@ import ru.practicum.ewm.dto.EndpointHitDto;
 import ru.practicum.ewm.dto.ViewStatsDto;
 import ru.practicum.ewm.events.dto.EventDto;
 import ru.practicum.ewm.events.dto.NewEventDto;
-import ru.practicum.ewm.events.dto.SortVariant;
+import ru.practicum.ewm.events.dto.SortBy;
 import ru.practicum.ewm.events.dto.State;
 import ru.practicum.ewm.events.model.Event;
 import ru.practicum.ewm.events.repository.EventRepository;
-import ru.practicum.ewm.exception.NotFoundException;
-import ru.practicum.ewm.exception.OperationException;
-import ru.practicum.ewm.location.dto.LocationDto;
+import ru.practicum.ewm.exceptions.NotFoundException;
+import ru.practicum.ewm.exceptions.OperationException;
+import ru.practicum.ewm.locations.dto.LocationDto;
 import ru.practicum.ewm.requests.model.RequestStat;
 import ru.practicum.ewm.requests.repository.RequestRepository;
 import ru.practicum.ewm.users.dto.UserDto;
@@ -153,7 +153,7 @@ public class EventServiceImpl implements EventService {
     public EventDto getPublicEventById(Long eventId, String ip, String url) {
         createNewHit(ip, url);
 
-        Event event = getEventByEventIdAndState(eventId, State.PUBLISHED);
+        Event event = getEventByEventIdAndState(eventId);
         Map<String, Long> eventViewsMap = getEventViewsMap(getEventsViewsList(List.of(event)));
 
         return new ArrayList<>(EventMapper.toDto(List.of(event), eventViewsMap)).get(0);
@@ -236,17 +236,17 @@ public class EventServiceImpl implements EventService {
         statisticClient.createHit(endpointHitDto);
     }
 
-    private void sortEvents(SortVariant sortVariant, List<EventDto> eventDtos) {
+    private void sortEvents(SortBy sortBy, List<EventDto> eventDtos) {
         Comparator<EventDto> comparatorViews = Comparator.comparing(EventDto::getViews).reversed();
         Comparator<EventDto> comparatorDates = Comparator.comparing(EventDto::getEventDate).reversed();
 
-        if (sortVariant == null) {
+        if (sortBy == null) {
             return;
         }
 
-        if (sortVariant.equals(SortVariant.EVENT_DATE)) {
+        if (sortBy.equals(SortBy.EVENT_DATE)) {
             eventDtos.sort(comparatorDates);
-        } else if (sortVariant.equals(SortVariant.VIEWS)) {
+        } else if (sortBy.equals(SortBy.VIEWS)) {
             eventDtos.sort(comparatorViews);
         }
     }
@@ -270,8 +270,7 @@ public class EventServiceImpl implements EventService {
 
         Map<Long, Long> requestStatsMap = getRequestStatsMap(requestStats);
 
-        return eventDtos
-                .stream()
+        return eventDtos.stream()
                 .filter(eventDto -> requestStatsMap.get(eventDto.getId()) < eventDto.getParticipantLimit())
                 .collect(toList());
     }
@@ -293,8 +292,8 @@ public class EventServiceImpl implements EventService {
         return event;
     }
 
-    private Event getEventByEventIdAndState(Long eventId, State state) {
-        Event event = eventRepository.findEventByIdAndState(eventId, state);
+    private Event getEventByEventIdAndState(Long eventId) {
+        Event event = eventRepository.findEventByIdAndState(eventId, State.PUBLISHED);
 
         ifNullThrowNotFoundException(event, eventId);
 

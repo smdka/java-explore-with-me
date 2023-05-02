@@ -1,6 +1,6 @@
 package ru.practicum.ewm.events.dto;
 
-public enum SortVariant {
+public enum SortBy {
     EVENT_DATE,
     VIEWS
 }

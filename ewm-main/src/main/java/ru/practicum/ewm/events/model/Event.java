@@ -4,7 +4,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import ru.practicum.ewm.categories.model.Category;
 import ru.practicum.ewm.events.dto.State;
-import ru.practicum.ewm.location.model.Location;
+import ru.practicum.ewm.locations.model.Location;
 import ru.practicum.ewm.users.model.User;
 
 import javax.persistence.*;

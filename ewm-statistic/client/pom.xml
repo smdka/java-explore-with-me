@@ -8,10 +8,8 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>ewm-statistic-client</artifactId>
+    <artifactId>client</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-
-    <name>Explore With Me - Client</name>
 
     <dependencies>
         <dependency>

@@ -12,7 +12,7 @@ import ru.practicum.ewm.compilations.model.Compilation;
 import ru.practicum.ewm.compilations.repository.CompilationRepository;
 import ru.practicum.ewm.events.model.Event;
 import ru.practicum.ewm.events.repository.EventRepository;
-import ru.practicum.ewm.exception.NotFoundException;
+import ru.practicum.ewm.exceptions.NotFoundException;
 
 import java.util.Collection;
 import java.util.HashSet;

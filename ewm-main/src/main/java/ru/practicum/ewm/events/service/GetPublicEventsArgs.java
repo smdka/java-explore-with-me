@@ -4,7 +4,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import ru.practicum.ewm.events.dto.SortVariant;
+import ru.practicum.ewm.events.dto.SortBy;
 import ru.practicum.ewm.events.dto.State;
 
 import java.time.LocalDateTime;
@@ -22,7 +22,7 @@ public class GetPublicEventsArgs {
     Boolean paid;
     LocalDateTime rangeStart;
     LocalDateTime rangeEnd;
-    SortVariant sort;
+    SortBy sort;
     Boolean onlyAvailable;
     String ip;
     String url;

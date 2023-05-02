@@ -1,12 +1,12 @@
-package ru.practicum.ewm.location.service;
+package ru.practicum.ewm.locations.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.ewm.location.dto.LocationDto;
-import ru.practicum.ewm.location.dto.NewLocationDto;
-import ru.practicum.ewm.location.model.Location;
-import ru.practicum.ewm.location.repository.LocationRepository;
+import ru.practicum.ewm.locations.dto.LocationDto;
+import ru.practicum.ewm.locations.dto.NewLocationDto;
+import ru.practicum.ewm.locations.model.Location;
+import ru.practicum.ewm.locations.repository.LocationRepository;
 
 @Service
 @RequiredArgsConstructor

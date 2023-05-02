@@ -10,8 +10,8 @@ import ru.practicum.ewm.categories.dto.NewCategoryDto;
 import ru.practicum.ewm.categories.model.Category;
 import ru.practicum.ewm.categories.repository.CategoryRepository;
 import ru.practicum.ewm.events.repository.EventRepository;
-import ru.practicum.ewm.exception.NotFoundException;
-import ru.practicum.ewm.exception.OperationException;
+import ru.practicum.ewm.exceptions.NotFoundException;
+import ru.practicum.ewm.exceptions.OperationException;
 
 import java.util.Collection;
 import java.util.List;

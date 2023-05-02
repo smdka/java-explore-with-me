@@ -1,4 +1,4 @@
-package ru.practicum.ewm.location.dto;
+package ru.practicum.ewm.locations.dto;
 
 import lombok.Value;
 

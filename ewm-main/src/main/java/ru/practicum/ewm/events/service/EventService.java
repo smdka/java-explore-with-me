@@ -3,7 +3,7 @@ package ru.practicum.ewm.events.service;
 import ru.practicum.ewm.categories.dto.CategoryDto;
 import ru.practicum.ewm.events.dto.EventDto;
 import ru.practicum.ewm.events.dto.NewEventDto;
-import ru.practicum.ewm.location.dto.LocationDto;
+import ru.practicum.ewm.locations.dto.LocationDto;
 import ru.practicum.ewm.users.dto.UserDto;
 
 import java.util.Collection;

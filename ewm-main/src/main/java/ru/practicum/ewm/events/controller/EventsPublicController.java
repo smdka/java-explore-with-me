@@ -2,9 +2,10 @@ package ru.practicum.ewm.events.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.events.dto.EventDto;
-import ru.practicum.ewm.events.dto.SortVariant;
+import ru.practicum.ewm.events.dto.SortBy;
 import ru.practicum.ewm.events.dto.State;
 import ru.practicum.ewm.events.service.EventService;
 import ru.practicum.ewm.events.service.GetPublicEventsArgs;
@@ -25,10 +26,10 @@ public class EventsPublicController {
     public Collection<EventDto> getAll(@RequestParam(required = false) String text,
                                        @RequestParam(required = false) List<Long> categories,
                                        @RequestParam(required = false) Boolean paid,
-                                       @RequestParam(required = false) LocalDateTime rangeStart,
-                                       @RequestParam(required = false) LocalDateTime rangeEnd,
+                                       @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
+                                       @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
                                        @RequestParam(defaultValue = "false") Boolean onlyAvailable,
-                                       @RequestParam(required = false) SortVariant sort,
+                                       @RequestParam(required = false) SortBy sort,
                                        @RequestParam(defaultValue = "0") Integer from,
                                        @RequestParam(defaultValue = "10") Integer size,
                                        HttpServletRequest request) {

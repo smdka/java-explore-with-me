@@ -9,9 +9,9 @@ import ru.practicum.ewm.categories.service.CategoryService;
 import ru.practicum.ewm.events.dto.EventDto;
 import ru.practicum.ewm.events.dto.NewEventDto;
 import ru.practicum.ewm.events.service.EventService;
-import ru.practicum.ewm.location.dto.LocationDto;
-import ru.practicum.ewm.location.dto.NewLocationDto;
-import ru.practicum.ewm.location.service.LocationService;
+import ru.practicum.ewm.locations.dto.LocationDto;
+import ru.practicum.ewm.locations.dto.NewLocationDto;
+import ru.practicum.ewm.locations.service.LocationService;
 import ru.practicum.ewm.users.dto.UserDto;
 import ru.practicum.ewm.users.service.UserService;
 
