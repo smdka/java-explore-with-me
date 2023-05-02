@@ -28,8 +28,8 @@ public class CategoriesPublicController {
 
     @GetMapping("/{categoryId}")
     public CategoryDto getCategoryById(@PathVariable Long categoryId,
-                                       @RequestParam(value = "from", defaultValue = "0") Integer from,
-                                       @RequestParam(value = "size", defaultValue = "10") Integer size) {
+                                       @RequestParam(defaultValue = "0") Integer from,
+                                       @RequestParam(defaultValue = "10") Integer size) {
         log.info("GET /categories/{}?from={}&size={}", categoryId, from, size);
 
         CategoryDto response = categoryService.getById(categoryId, from, size);

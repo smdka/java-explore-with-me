@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.List;
 
 public interface UserService {
-    UserDto create(NewUserDto newUserDto);
+    UserDto add(NewUserDto newUserDto);
 
     Collection<UserDto> getAll(List<Long> ids, Integer from, Integer size);
 

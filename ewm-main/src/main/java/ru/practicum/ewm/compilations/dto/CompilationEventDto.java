@@ -8,6 +8,7 @@ import javax.validation.constraints.NotNull;
 public class CompilationEventDto {
     @NotNull
     Long compilationId;
+
     @NotNull
     Long eventId;
 }

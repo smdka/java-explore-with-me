@@ -25,14 +25,13 @@ public class UsersAdminController {
     public UserDto create(@RequestBody @Valid NewUserDto newUserDto) {
         log.info("POST /admin/users");
         log.info("Request body: {}", newUserDto);
-        return userService.create(newUserDto);
+        return userService.add(newUserDto);
     }
 
     @GetMapping("/users")
-    public Collection<UserDto> getAll(
-            @RequestParam(required = false) List<Long> ids,
-            @RequestParam(defaultValue = "0") Integer from,
-            @RequestParam(defaultValue = "10") Integer size) {
+    public Collection<UserDto> getAll(@RequestParam(required = false) List<Long> ids,
+                                      @RequestParam(defaultValue = "0") Integer from,
+                                      @RequestParam(defaultValue = "10") Integer size) {
         log.info("GET /admin/users?ids={}&from={}&size={}", ids, from, size);
         return userService.getAll(ids, from, size);
     }

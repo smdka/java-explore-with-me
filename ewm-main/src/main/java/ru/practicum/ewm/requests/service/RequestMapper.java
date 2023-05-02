@@ -1,16 +1,16 @@
 package ru.practicum.ewm.requests.service;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 import ru.practicum.ewm.events.dto.State;
 import ru.practicum.ewm.requests.dto.RequestDto;
 import ru.practicum.ewm.requests.model.Request;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+import static java.util.stream.Collectors.toList;
+
+@UtilityClass
 public class RequestMapper {
     public static RequestDto toDto(Request request) {
         return new RequestDto(
@@ -25,7 +25,7 @@ public class RequestMapper {
         return requests
                 .stream()
                 .map(RequestMapper::toDto)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     public static Request toModel(Long eventId, Long requesterId, State status) {

@@ -10,7 +10,6 @@ public class NewUserDto {
     @NotBlank
     String name;
 
-//    @Email(regexp = "^[a-zA-Z0-9_!#$%&’*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")
     @Email
     @NotBlank
     String email;

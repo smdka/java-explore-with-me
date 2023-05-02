@@ -40,10 +40,13 @@ public class Compilation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(nullable = false)
     private String title;
+
     @Column(nullable = false)
     private Boolean pinned;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "compilation_events",

@@ -11,6 +11,7 @@ import ru.practicum.ewm.events.model.Event;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 public interface EventRepository extends JpaRepository<Event, Long> {
 
@@ -21,12 +22,12 @@ public interface EventRepository extends JpaRepository<Event, Long> {
            "AND (:categories IS NULL OR e.category.id IN :categories) " +
            "AND (coalesce(:rangeStart, :rangeEnd) IS NULL " +
            "OR e.eventDate BETWEEN coalesce(:rangeStart, e.eventDate) AND coalesce(:rangeEnd, e.eventDate))")
-    List<Event> getEvents(@Param("rangeStart") LocalDateTime rangeStart,
-                          @Param("rangeEnd") LocalDateTime rangeEnd,
-                          @Param("users") Collection<Long> users,
-                          @Param("states") Collection<State> states,
-                          @Param("categories") Collection<Long> categories,
-                          Pageable pageable);
+    List<Event> findAll(@Param("rangeStart") LocalDateTime rangeStart,
+                        @Param("rangeEnd") LocalDateTime rangeEnd,
+                        @Param("users") Collection<Long> users,
+                        @Param("states") Collection<State> states,
+                        @Param("categories") Collection<Long> categories,
+                        Pageable pageable);
 
     @EntityGraph(value = "event")
     List<Event> findAllByInitiatorId(Long userId, Pageable pageable);
@@ -41,19 +42,19 @@ public interface EventRepository extends JpaRepository<Event, Long> {
            "AND (:paid IS NULL OR e.paid = :paid) " +
            "AND ((coalesce(:rangeStart, :rangeEnd) IS NULL AND e.eventDate > now()) " +
            "OR e.eventDate BETWEEN coalesce(:rangeStart, e.eventDate) AND coalesce(:rangeEnd, e.eventDate))")
-    List<Event> getPublicEvents(Pageable pageable,
-                                @Param("state") State state,
-                                @Param("text") String text,
-                                @Param("categories") Collection<Long> categories,
-                                @Param("paid") Boolean paid,
-                                @Param("rangeStart") LocalDateTime rangeStart,
-                                @Param("rangeEnd") LocalDateTime rangeEnd);
+    List<Event> findAllPublic(Pageable pageable,
+                              @Param("state") State state,
+                              @Param("text") String text,
+                              @Param("categories") Collection<Long> categories,
+                              @Param("paid") Boolean paid,
+                              @Param("rangeStart") LocalDateTime rangeStart,
+                              @Param("rangeEnd") LocalDateTime rangeEnd);
 
     @EntityGraph(value = "event")
-    Event findByInitiatorIdAndId(Long userId, Long eventId);
+    Optional<Event> findByInitiatorIdAndId(Long userId, Long eventId);
 
     @EntityGraph(value = "event")
-    Event findEventByIdAndState(Long eventId, State state);
+    Optional<Event> findEventByIdAndState(Long eventId, State state);
 
     @EntityGraph(value = "event")
     Collection<Event> findAllByCategoryId(Long categoryId);

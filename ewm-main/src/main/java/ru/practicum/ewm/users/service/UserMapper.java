@@ -1,17 +1,17 @@
 package ru.practicum.ewm.users.service;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 import ru.practicum.ewm.users.dto.NewUserDto;
 import ru.practicum.ewm.users.dto.UserDto;
 import ru.practicum.ewm.users.model.User;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@UtilityClass
 public class UserMapper {
     public static User toModel(NewUserDto newUserDto) {
         User user = new User();
@@ -33,6 +33,6 @@ public class UserMapper {
         return users
                 .stream()
                 .map(UserMapper::toDto)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 }

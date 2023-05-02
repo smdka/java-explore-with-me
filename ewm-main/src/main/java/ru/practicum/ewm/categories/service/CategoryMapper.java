@@ -1,18 +1,17 @@
 package ru.practicum.ewm.categories.service;
 
+import lombok.experimental.UtilityClass;
 import org.springframework.data.domain.Page;
 import ru.practicum.ewm.categories.dto.CategoryDto;
 import ru.practicum.ewm.categories.dto.NewCategoryDto;
 import ru.practicum.ewm.categories.model.Category;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
+
+@UtilityClass
 public class CategoryMapper {
-
-    private CategoryMapper() {
-    }
-
     public static Category toModel(NewCategoryDto newCategoryDto) {
         Category category = new Category();
 
@@ -29,6 +28,6 @@ public class CategoryMapper {
         return categories
                 .stream()
                 .map(CategoryMapper::toDto)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 }

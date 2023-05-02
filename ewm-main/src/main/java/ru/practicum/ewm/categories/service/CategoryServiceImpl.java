@@ -20,11 +20,12 @@ import java.util.List;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
+    private static final String CATEGORY_HAS_RELATED_EVENTS_MSG = "С категорией с id=%d связаны события";
     private final CategoryRepository categoryRepository;
 
     private final EventRepository eventRepository;
 
-    private static final String CATEGORY_NOT_FOUND_MESSAGE = "Category with id=%s was not found";
+    private static final String CATEGORY_NOT_FOUND_MSG = "Категория с id=%s не найдена";
 
     @Override
     public Collection<CategoryDto> getAll(Integer from, Integer size) {
@@ -36,10 +37,10 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryDto getById(Long categoryId, Integer from, Integer size) {
         Pageable pageable = PageRequest.of(from, size);
-        List<Category> categories = categoryRepository.findById(categoryId, pageable);
+        List<Category> categories = categoryRepository.findAllById(categoryId, pageable);
 
         if (categories.isEmpty()) {
-            throw new NotFoundException(String.format(CATEGORY_NOT_FOUND_MESSAGE, categoryId));
+            throw new NotFoundException(String.format(CATEGORY_NOT_FOUND_MSG, categoryId));
         }
 
         return CategoryMapper.toDto(categories.get(0));
@@ -57,11 +58,11 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     public void deleteById(Long categoryId) {
         if (!eventRepository.findAllByCategoryId(categoryId).isEmpty()) {
-            throw new OperationException("The category is not empty");
+            throw new OperationException(String.format(CATEGORY_HAS_RELATED_EVENTS_MSG, categoryId));
         }
 
         if (!categoryRepository.existsById(categoryId)) {
-            throw new NotFoundException(String.format(CATEGORY_NOT_FOUND_MESSAGE, categoryId));
+            throw new NotFoundException(String.format(CATEGORY_NOT_FOUND_MSG, categoryId));
         }
 
         categoryRepository.deleteById(categoryId);
@@ -69,9 +70,9 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional
-    public CategoryDto updateCategoryById(Long categoryId, NewCategoryDto newCategoryDto) {
+    public CategoryDto updateById(Long categoryId, NewCategoryDto newCategoryDto) {
         Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new NotFoundException(String.format(CATEGORY_NOT_FOUND_MESSAGE, categoryId)));
+                .orElseThrow(() -> new NotFoundException(String.format(CATEGORY_NOT_FOUND_MSG, categoryId)));
 
         category.setName(newCategoryDto.getName());
 

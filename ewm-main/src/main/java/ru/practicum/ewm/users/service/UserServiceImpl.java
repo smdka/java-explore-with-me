@@ -20,11 +20,11 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
-    private static final String USER_NOT_FOUND_MESSAGE = "User with id=%s was not found";
+    private static final String USER_NOT_FOUND_MSG = "Пользователь с id=%s не найден";
 
     @Override
     @Transactional
-    public UserDto create(NewUserDto newUserDto) {
+    public UserDto add(NewUserDto newUserDto) {
         User user = UserMapper.toModel(newUserDto);
 
         return UserMapper.toDto(userRepository.save(user));
@@ -34,16 +34,15 @@ public class UserServiceImpl implements UserService {
     public Collection<UserDto> getAll(List<Long> ids, Integer from, Integer size) {
         Pageable pageable = PageRequest.of(from, size);
 
-        return UserMapper.toDto(userRepository.getUsers(ids, pageable));
+        return UserMapper.toDto(userRepository.findAllUsersByIds(ids, pageable));
     }
 
     @Override
     @Transactional
     public void deleteById(Long userId) {
         if (!userRepository.existsById(userId)) {
-            throw new NotFoundException(String.format(USER_NOT_FOUND_MESSAGE, userId));
+            throw new NotFoundException(String.format(USER_NOT_FOUND_MSG, userId));
         }
-
         userRepository.deleteById(userId);
     }
 }

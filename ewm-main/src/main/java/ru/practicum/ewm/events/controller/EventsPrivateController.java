@@ -41,10 +41,8 @@ public class EventsPrivateController {
         log.info("POST /users/{}/events", userId);
         log.info("Request body: {}", newEventDto);
 
-        NewLocationDto newLocationDto = new NewLocationDto(
-                newEventDto.getLocation().getLat(),
-                newEventDto.getLocation().getLon());
-        LocationDto locationDto = locationService.create(newLocationDto);
+        NewLocationDto newLocationDto = new NewLocationDto(newEventDto.getLocation().getLat(), newEventDto.getLocation().getLon());
+        LocationDto locationDto = locationService.add(newLocationDto);
         UserDto userDto = new ArrayList<>(userService.getAll(List.of(userId), 0, 1)).get(0);
         CategoryDto categoryDto = categoryService.getById(newEventDto.getCategory(), 0, 1);
 

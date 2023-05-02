@@ -1,10 +1,12 @@
 package ru.practicum.ewm.compilations.model;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.FieldDefaults;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,12 +22,13 @@ import javax.persistence.Table;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class CompilationEvent {
     @Id
     @Column(name = "compilation_id")
-    private Long compilationId;
+    Long compilationId;
 
     @Id
     @Column(name = "event_id")
-    private Long eventId;
+    Long eventId;
 }

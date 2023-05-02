@@ -1,7 +1,6 @@
 package ru.practicum.ewm.events.service;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 import ru.practicum.ewm.categories.dto.CategoryDto;
 import ru.practicum.ewm.categories.model.Category;
 import ru.practicum.ewm.events.dto.EventDto;
@@ -20,7 +19,7 @@ import java.util.Map;
 import static java.util.stream.Collectors.toList;
 
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@UtilityClass
 public class EventMapper {
     public static Event toModel(NewEventDto newEventDto,
                                 LocationDto locationDto,

@@ -7,7 +7,7 @@ import ru.practicum.ewm.requests.dto.RequestUpdateDto;
 import java.util.Collection;
 
 public interface RequestService {
-    RequestDto create(Long userId, Long eventId);
+    RequestDto add(Long userId, Long eventId);
 
     Collection<RequestDto> getById(Long userId);
 

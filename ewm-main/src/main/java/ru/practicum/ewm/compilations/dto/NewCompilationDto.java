@@ -10,7 +10,9 @@ import java.util.List;
 public class NewCompilationDto {
     @NotNull
     Boolean pinned;
+
     @NotBlank
     String title;
+
     List<Long> events;
 }

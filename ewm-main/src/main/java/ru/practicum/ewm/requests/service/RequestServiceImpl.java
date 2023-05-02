@@ -23,23 +23,24 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class RequestServiceImpl implements RequestService {
-    private static final String REQUEST_ALREADY_EXISTS_MSG = "Пользователь с id=%d уже создал запрос на участие в событии с id=%d";
     private final RequestRepository requestRepository;
     private final EventRepository eventRepository;
 
-    private static final String REQUEST_SAME_USER_ID_EXCEPTION_MESSAGE =
-            "Cannot create request for own event.";
+    private static final String REQUEST_ALREADY_EXISTS_MSG = "Пользователь с id=%d уже создал запрос на участие в событии с id=%d";
+
+    private static final String REQUEST_SAME_USER_ID_EXCEPTION_MSG =
+            "Нельзя создать запрос для собственного события";
     private static final String REQUEST_STATE_EXCEPTION_MESSAGE =
-            "Cannot create request for unpublished event.";
+            "Нельзя создать запрос для неопубликованного события";
     private static final String REQUEST_LIMIT_EXCEPTION_MESSAGE =
-            "Cannot create request because of participant limitation.";
+            "Нельзя создать запрос из-за ограничения количества участников события";
     private static final String REQUEST_NOT_FOUND_EXCEPTION_MESSAGE =
-            "Request with id=%s was not found";
-    private static final String EVENT_NOT_FOUND_MESSAGE = "Event with id=%s was not found";
+            "Запрос с id=%s не найден";
+    private static final String EVENT_NOT_FOUND_MESSAGE = "Событие с id=%s не найдено";
 
     @Override
     @Transactional
-    public RequestDto create(Long userId, Long eventId) {
+    public RequestDto add(Long userId, Long eventId) {
         Event event = findEventById(eventId);
 
         validateEventForRequest(userId, event);
@@ -83,13 +84,8 @@ public class RequestServiceImpl implements RequestService {
     }
 
     private Request getRequestByRequesterIdAndId(Long userId, Long requestId) {
-        Request request = requestRepository.findByRequesterIdAndId(userId, requestId);
-
-        if (request == null) {
-            throw new NotFoundException(String.format(REQUEST_NOT_FOUND_EXCEPTION_MESSAGE, requestId));
-        }
-
-        return request;
+        return requestRepository.findByRequesterIdAndId(userId, requestId)
+                .orElseThrow(() -> new NotFoundException(String.format(REQUEST_NOT_FOUND_EXCEPTION_MESSAGE, requestId)));
     }
 
     @Override
@@ -114,7 +110,7 @@ public class RequestServiceImpl implements RequestService {
 
     private void validateEventInitiator(Long userId, Event event) {
         if (event.getInitiator().getId().equals(userId)) {
-            throw new OperationException(REQUEST_SAME_USER_ID_EXCEPTION_MESSAGE);
+            throw new OperationException(REQUEST_SAME_USER_ID_EXCEPTION_MSG);
         }
     }
 

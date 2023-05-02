@@ -1,7 +1,6 @@
 package ru.practicum.ewm.compilations.service;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 import ru.practicum.ewm.compilations.dto.CompilationDto;
 import ru.practicum.ewm.compilations.dto.NewCompilationDto;
 import ru.practicum.ewm.compilations.model.Compilation;
@@ -12,7 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@UtilityClass
 public class CompilationMapper {
     public static List<CompilationDto> toCompilationDto(List<Compilation> compilations) {
         return compilations.stream().map(CompilationMapper::toCompilationDto)

@@ -42,7 +42,7 @@ public class CategoriesAdminController {
         log.info("PATCH /admin/categories/{}", categoryId);
         log.info("Request body: {}", newCategoryDto);
 
-        CategoryDto response = categoryService.updateCategoryById(categoryId, newCategoryDto);
+        CategoryDto response = categoryService.updateById(categoryId, newCategoryDto);
 
         log.info("Response: {}", response);
         return response;

@@ -8,6 +8,7 @@ import ru.practicum.ewm.requests.model.RequestStat;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 public interface RequestRepository extends JpaRepository<Request, Long> {
 
@@ -15,7 +16,7 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
 
     Collection<Request> findAllByEventId(Long eventId);
 
-    Request findByRequesterIdAndId(Long requesterId, Long id);
+    Optional<Request> findByRequesterIdAndId(Long requesterId, Long id);
 
     @Query("SELECT new ru.practicum.ewm.requests.model.RequestStat(r.eventId, COUNT(r.eventId)) " +
            "FROM Request r " +

@@ -1,14 +1,12 @@
 package ru.practicum.ewm.locations.service;
 
+import lombok.experimental.UtilityClass;
 import ru.practicum.ewm.locations.dto.LocationDto;
 import ru.practicum.ewm.locations.dto.NewLocationDto;
 import ru.practicum.ewm.locations.model.Location;
 
+@UtilityClass
 public class LocationMapper {
-
-    private LocationMapper() {
-    }
-
     public static Location toModel(NewLocationDto newLocationDto) {
         Location location = new Location();
 

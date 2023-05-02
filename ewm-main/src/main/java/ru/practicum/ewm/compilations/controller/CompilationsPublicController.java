@@ -20,12 +20,20 @@ public class CompilationsPublicController {
                                              @RequestParam(defaultValue = "0") Integer from,
                                              @RequestParam(defaultValue = "10") Integer size) {
         log.info("GET /compilations?pinned={}&from={}&size={}", pinned, from, size);
-        return service.getAll(pinned, from, size);
+
+        Collection<CompilationDto> response = service.getAll(pinned, from, size);
+
+        log.info("Response body: {}", response);
+        return response;
     }
 
     @GetMapping("/{compId}")
     public CompilationDto getById(@PathVariable Long compId) {
         log.info("GET /compilations/{}", compId);
-        return service.getById(compId);
+
+        CompilationDto response = service.getById(compId);
+
+        log.info("Response body: {}", response);
+        return response;
     }
 }

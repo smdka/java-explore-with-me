@@ -23,7 +23,7 @@ public class RequestsPrivateController {
     public RequestDto create(@PathVariable Long userId,
                              @RequestParam Long eventId) {
         log.info("POST /users/{}/requests?eventId={}", userId, eventId);
-        return requestService.create(userId, eventId);
+        return requestService.add(userId, eventId);
     }
 
     @GetMapping("/{userId}/requests")

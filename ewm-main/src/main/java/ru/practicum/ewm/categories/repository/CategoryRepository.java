@@ -9,5 +9,5 @@ import java.util.List;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
-    List<Category> findById(Long categoryId, Pageable pageable);
+    List<Category> findAllById(Long categoryId, Pageable pageable);
 }
