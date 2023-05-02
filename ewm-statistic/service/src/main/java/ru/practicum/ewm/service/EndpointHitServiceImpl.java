@@ -21,7 +21,7 @@ public class EndpointHitServiceImpl implements EndpointHitService {
     @Override
     @Transactional
     public void add(EndpointHitDto endpointHitDto) {
-        repository.save(EndpointHitMapper.INSTANCE.toModel(endpointHitDto));
+        repository.save(EndpointHitMapper.MAP.toModel(endpointHitDto));
     }
 
     @Override
