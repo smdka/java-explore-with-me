@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void deleteById(Long userId) {
+    public void delete(Long userId) {
         if (!userRepository.existsById(userId)) {
             throw new NotFoundException(String.format(USER_NOT_FOUND_MSG, userId));
         }

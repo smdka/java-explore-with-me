@@ -48,7 +48,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional
-    public EventDto updateById(Long eventId, NewEventDto newEventDto) {
+    public EventDto update(Long eventId, NewEventDto newEventDto) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException(String.format(EVENT_NOT_FOUND_MSG, eventId)));
 

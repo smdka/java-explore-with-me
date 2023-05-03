@@ -9,7 +9,7 @@ import ru.practicum.ewm.users.dto.UserDto;
 import java.util.Collection;
 
 public interface EventService {
-    EventDto updateById(Long eventId, NewEventDto newEventDto);
+    EventDto update(Long eventId, NewEventDto newEventDto);
 
     Collection<EventDto> getAll(GetAllEventsArgs getAllEventsArgs);
 

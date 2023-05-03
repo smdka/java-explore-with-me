@@ -33,9 +33,9 @@ public class RequestServiceImpl implements RequestService {
 
     private static final String REQUEST_SAME_USER_ID_EXCEPTION_MSG =
             "Нельзя создать запрос для собственного события";
-    private static final String REQUEST_STATE_EXCEPTION_MESSAGE =
+    private static final String REQUEST_STATE_EXCEPTION_MSG =
             "Нельзя создать запрос для неопубликованного события";
-    private static final String REQUEST_LIMIT_EXCEPTION_MESSAGE =
+    private static final String REQUEST_LIMIT_EXCEPTION_MSG =
             "Нельзя создать запрос из-за ограничения количества участников события";
     private static final String REQUEST_NOT_FOUND_EXCEPTION_MESSAGE =
             "Запрос с id=%s не найден";
@@ -68,13 +68,13 @@ public class RequestServiceImpl implements RequestService {
 
     private void validateEventState(Event event) {
         if (!event.getState().equals(State.PUBLISHED)) {
-            throw new OperationException(REQUEST_STATE_EXCEPTION_MESSAGE);
+            throw new OperationException(REQUEST_STATE_EXCEPTION_MSG);
         }
     }
 
     private void checkParticipantLimit(Long eventId, Event event) {
         if (requestRepository.countByEventId(eventId) >= event.getParticipantLimit()) {
-            throw new OperationException(REQUEST_LIMIT_EXCEPTION_MESSAGE);
+            throw new OperationException(REQUEST_LIMIT_EXCEPTION_MSG);
         }
     }
 
@@ -143,7 +143,7 @@ public class RequestServiceImpl implements RequestService {
 
     private void validateNewRequestUpdateDto(NewRequestUpdateDto newRequestUpdateDto) {
         if (newRequestUpdateDto == null) {
-            throw new OperationException(REQUEST_LIMIT_EXCEPTION_MESSAGE);
+            throw new OperationException(REQUEST_LIMIT_EXCEPTION_MSG);
         }
     }
 
@@ -154,7 +154,7 @@ public class RequestServiceImpl implements RequestService {
 
     private void checkEventParticipantLimit(Event event) {
         if (event.getConfirmedRequests() >= event.getParticipantLimit()) {
-            throw new OperationException(REQUEST_LIMIT_EXCEPTION_MESSAGE);
+            throw new OperationException(REQUEST_LIMIT_EXCEPTION_MSG);
         }
     }
 
@@ -182,7 +182,7 @@ public class RequestServiceImpl implements RequestService {
     private void validateRequestStatus(NewRequestUpdateDto newRequestUpdateDto, Request request) {
         if (request.getStatus().equals(State.CONFIRMED) &&
                 newRequestUpdateDto.getStatus().equals(State.REJECTED)) {
-            throw new OperationException(REQUEST_LIMIT_EXCEPTION_MESSAGE);
+            throw new OperationException(REQUEST_LIMIT_EXCEPTION_MSG);
         }
     }
 

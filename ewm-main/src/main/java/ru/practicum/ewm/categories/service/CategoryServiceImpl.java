@@ -56,7 +56,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional
-    public void deleteById(Long categoryId) {
+    public void delete(Long categoryId) {
         if (!eventRepository.findAllByCategoryId(categoryId).isEmpty()) {
             throw new OperationException(String.format(CATEGORY_HAS_RELATED_EVENTS_MSG, categoryId));
         }
@@ -70,7 +70,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional
-    public CategoryDto updateById(Long categoryId, NewCategoryDto newCategoryDto) {
+    public CategoryDto update(Long categoryId, NewCategoryDto newCategoryDto) {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new NotFoundException(String.format(CATEGORY_NOT_FOUND_MSG, categoryId)));
 

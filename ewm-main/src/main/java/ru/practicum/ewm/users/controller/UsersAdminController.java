@@ -40,6 +40,6 @@ public class UsersAdminController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteById(@PathVariable Long userId) {
         log.info("DELETE /admin/users/{}", userId);
-        userService.deleteById(userId);
+        userService.delete(userId);
     }
 }

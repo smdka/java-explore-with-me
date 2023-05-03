@@ -33,7 +33,7 @@ public class CategoriesAdminController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCategoryById(@PathVariable Long categoryId) {
         log.info("DELETE /admin/categories/{}", categoryId);
-        categoryService.deleteById(categoryId);
+        categoryService.delete(categoryId);
     }
 
     @PatchMapping("/{categoryId}")
@@ -42,7 +42,7 @@ public class CategoriesAdminController {
         log.info("PATCH /admin/categories/{}", categoryId);
         log.info("Request body: {}", newCategoryDto);
 
-        CategoryDto response = categoryService.updateById(categoryId, newCategoryDto);
+        CategoryDto response = categoryService.update(categoryId, newCategoryDto);
 
         log.info("Response: {}", response);
         return response;
