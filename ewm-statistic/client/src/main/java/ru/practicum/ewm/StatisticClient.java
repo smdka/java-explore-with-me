@@ -29,12 +29,8 @@ public class StatisticClient extends BaseClient {
     }
 
     public void addHit(EndpointHitDto endpointHitDto) {
-        log.info(String.format("Statistic client createHit: endpointHitDto=%s", endpointHitDto));
-        Gson gson = new Gson();
-        ResponseEntity<Object> objectResponseEntity = post("/hit", endpointHitDto);
-        String json = gson.toJson(objectResponseEntity.getBody());
-
-        gson.fromJson(json, ViewStatsDto.class);
+        log.info("Statistic client createHit: endpointHitDto={}", endpointHitDto);
+        post("/hit", endpointHitDto);
     }
 
     public Collection<ViewStatsDto> getStats(String start, String end, List<String> uris, Boolean unique) {

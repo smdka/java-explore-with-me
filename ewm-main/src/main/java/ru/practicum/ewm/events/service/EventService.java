@@ -3,7 +3,6 @@ package ru.practicum.ewm.events.service;
 import ru.practicum.ewm.categories.dto.CategoryDto;
 import ru.practicum.ewm.events.dto.EventDto;
 import ru.practicum.ewm.events.dto.NewEventDto;
-import ru.practicum.ewm.locations.dto.LocationDto;
 import ru.practicum.ewm.users.dto.UserDto;
 
 import java.util.Collection;
@@ -13,7 +12,7 @@ public interface EventService {
 
     Collection<EventDto> getAll(GetAllEventsArgs getAllEventsArgs);
 
-    EventDto add(NewEventDto newEventDto, LocationDto locationDto, UserDto userDto, CategoryDto categoryDto);
+    EventDto add(NewEventDto newEventDto, UserDto userDto, CategoryDto categoryDto);
 
     Collection<EventDto> getByUserId(Long userId, Integer from, Integer size);
 

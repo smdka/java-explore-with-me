@@ -159,49 +159,48 @@ public class RequestServiceImpl implements RequestService {
     }
 
     private void updateRequests(NewRequestUpdateDto newRequestUpdateDto,
-                                RequestUpdateDto requestUpdateDto, Event event) {
+                                RequestUpdateDto requestUpdateDto,
+                                Event event) {
+        if (event.getParticipantLimit().equals(0) || !event.getRequestModeration()) {
+            return;
+        }
+
         List<Long> requestIds = newRequestUpdateDto.getRequestIds();
+        List<Request> requests = requestRepository.findAllById(requestIds);
 
-        for (Long id : requestIds) {
-            if (event.getParticipantLimit().equals(0) || !event.getRequestModeration()) {
-                break;
-            }
+        if (requests.isEmpty()) {
+            throw new NotFoundException(String.format(REQUEST_NOT_FOUND_EXCEPTION_MESSAGE, requestIds));
+        }
 
-            Request request = getRequestById(id);
+        requests.forEach(request -> updateRequestStatusAndSave(newRequestUpdateDto, requestUpdateDto, event, request));
+    }
 
-            validateRequestStatus(newRequestUpdateDto, request);
-            updateRequestStatusAndSave(newRequestUpdateDto, requestUpdateDto, event, request);
+    private void updateRequestStatusAndSave(NewRequestUpdateDto newRequestUpdateDto,
+                                            RequestUpdateDto requestUpdateDto,
+                                            Event event,
+                                            Request request) {
+        checkRequestStatus(newRequestUpdateDto, request);
+
+        List<RequestDto> rejectedRequests = requestUpdateDto.getRejectedRequests();
+
+        if (event.getConfirmedRequests() >= event.getParticipantLimit()
+                || newRequestUpdateDto.getStatus().equals(State.REJECTED)) {
+            setRequestStatusAndSave(rejectedRequests, request, State.REJECTED);
+        } else {
+            setRequestStatusAndSave(rejectedRequests, request, newRequestUpdateDto.getStatus());
+
+            incrementEventConfirmedRequests(event);
         }
     }
 
-    private Request getRequestById(Long id) {
-        return requestRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(String.format(REQUEST_NOT_FOUND_EXCEPTION_MESSAGE, id)));
-    }
-
-    private void validateRequestStatus(NewRequestUpdateDto newRequestUpdateDto, Request request) {
+    private void checkRequestStatus(NewRequestUpdateDto newRequestUpdateDto, Request request) {
         if (request.getStatus().equals(State.CONFIRMED) &&
                 newRequestUpdateDto.getStatus().equals(State.REJECTED)) {
             throw new OperationException(REQUEST_LIMIT_EXCEPTION_MSG);
         }
     }
 
-    private void updateRequestStatusAndSave(NewRequestUpdateDto newRequestUpdateDto,
-                                            RequestUpdateDto requestUpdateDto,
-                                            Event event, Request request) {
-        if (event.getConfirmedRequests() >= event.getParticipantLimit()
-                || newRequestUpdateDto.getStatus().equals(State.REJECTED)) {
-            setRequestStatusAndSave(requestUpdateDto.getRejectedRequests(), request, State.REJECTED);
-        } else {
-            setRequestStatusAndSave(requestUpdateDto.getConfirmedRequests(),
-                    request, newRequestUpdateDto.getStatus());
-
-            incrementEventConfirmedRequests(event);
-        }
-    }
-
-    private void setRequestStatusAndSave(List<RequestDto> updatedRequests,
-                                         Request request, State status) {
+    private void setRequestStatusAndSave(List<RequestDto> updatedRequests, Request request, State status) {
         request.setStatus(status);
 
         requestRepository.save(request);
@@ -210,8 +209,6 @@ public class RequestServiceImpl implements RequestService {
     }
 
     private void incrementEventConfirmedRequests(Event event) {
-        event.setConfirmedRequests(event.getConfirmedRequests() + 1);
-
-        eventRepository.save(event);
+        eventRepository.increaseConfirmedRequests(event.getId());
     }
 }
