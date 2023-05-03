@@ -65,6 +65,4 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("UPDATE Event e SET e.confirmedRequests = e.confirmedRequests + 1 WHERE e.id = :id")
     void increaseConfirmedRequests(@Param("id") Long id);
-
-    Collection<Event> findAllByCategoryId(Long categoryId);
 }
