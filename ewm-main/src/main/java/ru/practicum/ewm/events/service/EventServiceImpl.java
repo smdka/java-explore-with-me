@@ -53,7 +53,7 @@ public class EventServiceImpl implements EventService {
                 .orElseThrow(() -> new NotFoundException(String.format(EVENT_NOT_FOUND_MSG, eventId)));
 
         if (newEventDto == null) {
-            return EventMapper.MAP.toDto(event);
+            return EventMapper.toDto(event);
         }
 
         validateAdminEventDate(newEventDto.getEventDate(), event);
@@ -62,7 +62,7 @@ public class EventServiceImpl implements EventService {
 
         Map<String, Long> eventViewsMap = getEventViewsMap(getEventsViewsList(List.of(event)));
 
-        return EventMapper.MAP.toDto(List.of(event), eventViewsMap).get(0);
+        return EventMapper.toDto(List.of(event), eventViewsMap).get(0);
     }
 
     @Override
@@ -74,7 +74,7 @@ public class EventServiceImpl implements EventService {
 
         Map<String, Long> eventViewsMap = getEventViewsMap(getEventsViewsList(events));
 
-        return EventMapper.MAP.toDto(events, eventViewsMap);
+        return EventMapper.toDto(events, eventViewsMap);
     }
 
     @Override
@@ -82,11 +82,11 @@ public class EventServiceImpl implements EventService {
     public EventDto add(NewEventDto newEventDto, LocationDto locationDto, UserDto userDto, CategoryDto categoryDto) {
         validateEventDate(newEventDto.getEventDate(), LocalDateTime.now().plusHours(2));
 
-        Event event = EventMapper.MAP.toModel(newEventDto, locationDto, userDto, categoryDto);
+        Event event = EventMapper.toModel(newEventDto, locationDto, userDto, categoryDto);
 
         event.setState(State.PENDING);
 
-        return EventMapper.MAP.toDto(eventRepository.save(event));
+        return EventMapper.toDto(eventRepository.save(event));
     }
 
     @Override
@@ -95,7 +95,7 @@ public class EventServiceImpl implements EventService {
         List<Event> events = eventRepository.findAllByInitiatorId(userId, pageable);
         Map<String, Long> eventViewsMap = getEventViewsMap(getEventsViewsList(events));
 
-        return EventMapper.MAP.toDto(events, eventViewsMap);
+        return EventMapper.toDto(events, eventViewsMap);
     }
 
     @Override
@@ -103,7 +103,7 @@ public class EventServiceImpl implements EventService {
         Event event = getEventByInitiatorIdAndEventId(userId, eventId);
         Map<String, Long> eventViewsMap = getEventViewsMap(getEventsViewsList(List.of(event)));
 
-        return EventMapper.MAP.toDto(List.of(event), eventViewsMap).get(0);
+        return EventMapper.toDto(List.of(event), eventViewsMap).get(0);
     }
 
     @Override
@@ -116,7 +116,7 @@ public class EventServiceImpl implements EventService {
 
         updateEventState(event, newEventDto);
 
-        return EventMapper.MAP.toDto(List.of(event), eventViewsMap).get(0);
+        return EventMapper.toDto(List.of(event), eventViewsMap).get(0);
     }
 
     @Override
@@ -141,7 +141,7 @@ public class EventServiceImpl implements EventService {
 
         Map<String, Long> eventViewsMap = getEventViewsMap(getEventsViewsList(events));
 
-        List<EventDto> eventDtos = EventMapper.MAP.toDto(events, eventViewsMap);
+        List<EventDto> eventDtos = EventMapper.toDto(events, eventViewsMap);
 
         List<EventDto> sortedEvents = new ArrayList<>(sortEvents(getPublicEventsArgs.getSort(), eventDtos));
 
@@ -155,7 +155,7 @@ public class EventServiceImpl implements EventService {
         Event event = getEventByEventIdAndState(eventId);
         Map<String, Long> eventViewsMap = getEventViewsMap(getEventsViewsList(List.of(event)));
 
-        return new ArrayList<>(EventMapper.MAP.toDto(List.of(event), eventViewsMap)).get(0);
+        return new ArrayList<>(EventMapper.toDto(List.of(event), eventViewsMap)).get(0);
     }
 
     private void validateEventDate(LocalDateTime eventDate, LocalDateTime limit) {
