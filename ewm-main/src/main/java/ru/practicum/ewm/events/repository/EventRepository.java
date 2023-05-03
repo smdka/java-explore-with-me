@@ -3,13 +3,11 @@ package ru.practicum.ewm.events.repository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import ru.practicum.ewm.events.dto.State;
 import ru.practicum.ewm.events.model.Event;
 
-import javax.persistence.LockModeType;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -59,10 +57,5 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     Optional<Event> findEventByIdAndState(Long eventId, State state);
 
     @EntityGraph(value = "event")
-    boolean existsByCategoryId(Long categoryId);
-
-    @EntityGraph(value = "event")
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("UPDATE Event e SET e.confirmedRequests = e.confirmedRequests + 1 WHERE e.id = :id")
-    void increaseConfirmedRequests(@Param("id") Long id);
+    Collection<Event> findAllByCategoryId(Long categoryId);
 }

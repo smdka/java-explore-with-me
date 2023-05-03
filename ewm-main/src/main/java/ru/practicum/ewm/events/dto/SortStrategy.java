@@ -1,4 +1,4 @@
-package ru.practicum.ewm.events.service;
+package ru.practicum.ewm.events.dto;
 
 import java.util.Collection;
 

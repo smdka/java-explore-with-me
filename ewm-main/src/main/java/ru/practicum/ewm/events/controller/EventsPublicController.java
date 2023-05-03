@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.events.dto.EventDto;
-import ru.practicum.ewm.events.service.SortBy;
+import ru.practicum.ewm.events.dto.SortBy;
 import ru.practicum.ewm.events.dto.State;
 import ru.practicum.ewm.events.service.EventService;
 import ru.practicum.ewm.events.service.GetPublicEventsArgs;

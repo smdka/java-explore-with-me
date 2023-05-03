@@ -1,6 +1,4 @@
-package ru.practicum.ewm.events.service;
-
-import ru.practicum.ewm.events.dto.EventDto;
+package ru.practicum.ewm.events.dto;
 
 import java.util.ArrayList;
 import java.util.Collection;
