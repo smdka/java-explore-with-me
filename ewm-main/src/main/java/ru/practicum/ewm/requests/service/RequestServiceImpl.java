@@ -160,23 +160,21 @@ public class RequestServiceImpl implements RequestService {
 
     private void updateRequests(NewRequestUpdateDto newRequestUpdateDto,
                                 RequestUpdateDto requestUpdateDto, Event event) {
+        if (event.getParticipantLimit().equals(0) || !event.getRequestModeration()) {
+            return;
+        }
+
         List<Long> requestIds = newRequestUpdateDto.getRequestIds();
+        List<Request> requests = requestRepository.findAllById(requestIds);
 
-        for (Long id : requestIds) {
-            if (event.getParticipantLimit().equals(0) || !event.getRequestModeration()) {
-                break;
-            }
+        if (requests.isEmpty()) {
+            throw new NotFoundException(String.format(REQUEST_NOT_FOUND_EXCEPTION_MESSAGE, requestIds));
+        }
 
-            Request request = getRequestById(id);
-
+        requests.forEach(request -> {
             validateRequestStatus(newRequestUpdateDto, request);
             updateRequestStatusAndSave(newRequestUpdateDto, requestUpdateDto, event, request);
-        }
-    }
-
-    private Request getRequestById(Long id) {
-        return requestRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(String.format(REQUEST_NOT_FOUND_EXCEPTION_MESSAGE, id)));
+        });
     }
 
     private void validateRequestStatus(NewRequestUpdateDto newRequestUpdateDto, Request request) {
