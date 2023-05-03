@@ -4,7 +4,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import ru.practicum.ewm.events.dto.SortBy;
 import ru.practicum.ewm.events.dto.State;
 
 import java.time.LocalDateTime;

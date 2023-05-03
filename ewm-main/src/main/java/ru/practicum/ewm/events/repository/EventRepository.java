@@ -58,4 +58,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     @EntityGraph(value = "event")
     Collection<Event> findAllByCategoryId(Long categoryId);
+
+    @EntityGraph(value = "event")
+    boolean existsByCategoryId(Long categoryId);
 }
