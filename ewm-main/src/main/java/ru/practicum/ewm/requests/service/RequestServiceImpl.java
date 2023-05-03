@@ -209,6 +209,8 @@ public class RequestServiceImpl implements RequestService {
     }
 
     private void incrementEventConfirmedRequests(Event event) {
-        eventRepository.increaseConfirmedRequests(event.getId());
+//        eventRepository.increaseConfirmedRequests(event.getId());
+        event.setConfirmedRequests(event.getConfirmedRequests() + 1);
+        eventRepository.save(event);
     }
 }
