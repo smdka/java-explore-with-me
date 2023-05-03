@@ -18,6 +18,8 @@ import ru.practicum.ewm.events.repository.EventRepository;
 import ru.practicum.ewm.exceptions.NotFoundException;
 import ru.practicum.ewm.exceptions.OperationException;
 import ru.practicum.ewm.locations.dto.LocationDto;
+import ru.practicum.ewm.locations.dto.NewLocationDto;
+import ru.practicum.ewm.locations.service.LocationService;
 import ru.practicum.ewm.requests.model.RequestStat;
 import ru.practicum.ewm.requests.repository.RequestRepository;
 import ru.practicum.ewm.users.dto.UserDto;
@@ -38,6 +40,8 @@ public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
 
     private final StatisticClient statisticClient;
+
+    private final LocationService locationService;
 
     private static final String EVENT_NOT_FOUND_MSG = "Событие с id=%s не найдено";
     private static final String OPERATION_EXCEPTION_MSG = "Field: eventDate. Error: должно содержать дату, " +
@@ -79,7 +83,10 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional
-    public EventDto add(NewEventDto newEventDto, LocationDto locationDto, UserDto userDto, CategoryDto categoryDto) {
+    public EventDto add(NewEventDto newEventDto, UserDto userDto, CategoryDto categoryDto) {
+        NewLocationDto newLocationDto = new NewLocationDto(newEventDto.getLocation().getLat(), newEventDto.getLocation().getLon());
+        LocationDto locationDto = locationService.add(newLocationDto);
+
         validateEventDate(newEventDto.getEventDate(), LocalDateTime.now().plusHours(2));
 
         Event event = EventMapper.toModel(newEventDto, locationDto, userDto, categoryDto);

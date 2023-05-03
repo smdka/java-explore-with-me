@@ -9,9 +9,6 @@ import ru.practicum.ewm.categories.service.CategoryService;
 import ru.practicum.ewm.events.dto.EventDto;
 import ru.practicum.ewm.events.dto.NewEventDto;
 import ru.practicum.ewm.events.service.EventService;
-import ru.practicum.ewm.locations.dto.LocationDto;
-import ru.practicum.ewm.locations.dto.NewLocationDto;
-import ru.practicum.ewm.locations.service.LocationService;
 import ru.practicum.ewm.users.dto.UserDto;
 import ru.practicum.ewm.users.service.UserService;
 
@@ -25,10 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("users")
 public class EventsPrivateController {
-
     private final EventService eventService;
-
-    private final LocationService locationService;
 
     private final UserService userService;
 
@@ -41,12 +35,10 @@ public class EventsPrivateController {
         log.info("POST /users/{}/events", userId);
         log.info("Request body: {}", newEventDto);
 
-        NewLocationDto newLocationDto = new NewLocationDto(newEventDto.getLocation().getLat(), newEventDto.getLocation().getLon());
-        LocationDto locationDto = locationService.add(newLocationDto);
         UserDto userDto = new ArrayList<>(userService.getAll(List.of(userId), 0, 1)).get(0);
         CategoryDto categoryDto = categoryService.getById(newEventDto.getCategory(), 0, 1);
 
-        return eventService.add(newEventDto, locationDto, userDto, categoryDto);
+        return eventService.add(newEventDto, userDto, categoryDto);
     }
 
     @GetMapping("/{userId}/events")
