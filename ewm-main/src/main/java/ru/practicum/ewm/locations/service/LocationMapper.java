@@ -1,22 +1,18 @@
 package ru.practicum.ewm.locations.service;
 
-import lombok.experimental.UtilityClass;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.factory.Mappers;
 import ru.practicum.ewm.locations.dto.LocationDto;
 import ru.practicum.ewm.locations.dto.NewLocationDto;
 import ru.practicum.ewm.locations.model.Location;
 
-@UtilityClass
-public class LocationMapper {
-    public static Location toModel(NewLocationDto newLocationDto) {
-        Location location = new Location();
+@Mapper
+public interface LocationMapper {
+    LocationMapper MAP = Mappers.getMapper(LocationMapper.class);
 
-        location.setLat(newLocationDto.getLat());
-        location.setLon(newLocationDto.getLon());
+    @Mapping(target = "id", ignore = true)
+    Location toModel(NewLocationDto newLocationDto);
 
-        return location;
-    }
-
-    public static LocationDto toDto(Location location) {
-        return new LocationDto(location.getId(), location.getLat(), location.getLon());
-    }
+    LocationDto toDto(Location location);
 }

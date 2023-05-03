@@ -28,7 +28,7 @@ public class EventsPublicController {
                                        @RequestParam(required = false) Boolean paid,
                                        @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
                                        @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
-                                       @RequestParam(defaultValue = "false") Boolean onlyAvailable,
+                                       @RequestParam(defaultValue = "false") boolean onlyAvailable,
                                        @RequestParam(required = false) SortBy sort,
                                        @RequestParam(defaultValue = "0") Integer from,
                                        @RequestParam(defaultValue = "10") Integer size,

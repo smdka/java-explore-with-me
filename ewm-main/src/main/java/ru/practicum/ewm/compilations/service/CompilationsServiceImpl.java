@@ -33,7 +33,7 @@ public class CompilationsServiceImpl implements CompilationsService {
     public Collection<CompilationDto> getAll(Boolean pinned, Integer from, Integer size) {
         Pageable pageable = PageRequest.of(from, size);
 
-        return CompilationMapper.toCompilationDto(compRepository.getAll(pinned, pageable));
+        return CompilationMapper.MAP.toDto(compRepository.getAll(pinned, pageable));
     }
 
     @Override
@@ -41,19 +41,19 @@ public class CompilationsServiceImpl implements CompilationsService {
         Compilation compilation = compRepository.findById(compId)
                 .orElseThrow(() -> new NotFoundException(String.format(COMP_NOT_FOUND_MSG, compId)));
 
-        return CompilationMapper.toCompilationDto(compilation);
+        return CompilationMapper.MAP.toDto(compilation);
     }
 
     @Override
     @Transactional
     public CompilationDto add(NewCompilationDto newCompilationDto) {
-        Compilation compilation = compRepository.save(CompilationMapper.toCompilation(newCompilationDto));
+        Compilation compilation = compRepository.save(CompilationMapper.MAP.toModel(newCompilationDto));
 
         List<Event> events = eventRepository.findAllById(newCompilationDto.getEvents());
 
         compilation.getEvents().addAll(events);
 
-        return CompilationMapper.toCompilationDto(compilation);
+        return CompilationMapper.MAP.toDto(compilation);
     }
 
     @Override
@@ -69,7 +69,7 @@ public class CompilationsServiceImpl implements CompilationsService {
                 compilation.getPinned()));
         compilation.setEvents(new HashSet<>(events));
 
-        return CompilationMapper.toCompilationDto(compilation);
+        return CompilationMapper.MAP.toDto(compilation);
     }
 
     @Override

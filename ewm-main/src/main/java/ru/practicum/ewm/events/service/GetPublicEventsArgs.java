@@ -23,7 +23,7 @@ public class GetPublicEventsArgs {
     LocalDateTime rangeStart;
     LocalDateTime rangeEnd;
     SortBy sort;
-    Boolean onlyAvailable;
+    boolean onlyAvailable;
     String ip;
     String url;
 }

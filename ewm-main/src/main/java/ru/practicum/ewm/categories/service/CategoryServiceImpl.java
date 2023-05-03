@@ -31,7 +31,7 @@ public class CategoryServiceImpl implements CategoryService {
     public Collection<CategoryDto> getAll(Integer from, Integer size) {
         Pageable pageable = PageRequest.of(from, size);
 
-        return CategoryMapper.toDto(categoryRepository.findAll(pageable));
+        return CategoryMapper.MAP.toDto(categoryRepository.findAll(pageable));
     }
 
     @Override
@@ -43,15 +43,15 @@ public class CategoryServiceImpl implements CategoryService {
             throw new NotFoundException(String.format(CATEGORY_NOT_FOUND_MSG, categoryId));
         }
 
-        return CategoryMapper.toDto(categories.get(0));
+        return CategoryMapper.MAP.toDto(categories.get(0));
     }
 
     @Override
     @Transactional
     public CategoryDto add(NewCategoryDto newCategoryDto) {
-        Category category = CategoryMapper.toModel(newCategoryDto);
+        Category category = CategoryMapper.MAP.toModel(newCategoryDto);
 
-        return CategoryMapper.toDto(categoryRepository.save(category));
+        return CategoryMapper.MAP.toDto(categoryRepository.save(category));
     }
 
     @Override
@@ -76,6 +76,6 @@ public class CategoryServiceImpl implements CategoryService {
 
         category.setName(newCategoryDto.getName());
 
-        return CategoryMapper.toDto(category);
+        return CategoryMapper.MAP.toDto(category);
     }
 }

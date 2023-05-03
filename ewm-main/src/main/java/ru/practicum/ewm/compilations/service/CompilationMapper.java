@@ -1,37 +1,23 @@
 package ru.practicum.ewm.compilations.service;
 
-import lombok.experimental.UtilityClass;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.factory.Mappers;
 import ru.practicum.ewm.compilations.dto.CompilationDto;
 import ru.practicum.ewm.compilations.dto.NewCompilationDto;
 import ru.practicum.ewm.compilations.model.Compilation;
-import ru.practicum.ewm.events.dto.EventDto;
-import ru.practicum.ewm.events.service.EventMapper;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
 
-@UtilityClass
-public class CompilationMapper {
-    public static List<CompilationDto> toCompilationDto(List<Compilation> compilations) {
-        return compilations.stream().map(CompilationMapper::toCompilationDto)
-                .collect(Collectors.toList());
-    }
+@Mapper
+public interface CompilationMapper {
+    CompilationMapper MAP = Mappers.getMapper(CompilationMapper.class);
 
-    public static CompilationDto toCompilationDto(Compilation compilation) {
-        return new CompilationDto(compilation.getId(),
-                compilation.getPinned(),
-                compilation.getTitle(),
-                (List<EventDto>) EventMapper.toDto(compilation.getEvents()));
-    }
+    List<CompilationDto> toDto(List<Compilation> compilations);
 
-    public static Compilation toCompilation(NewCompilationDto newCompilationDto) {
-        Compilation compilation = new Compilation();
+    CompilationDto toDto(Compilation compilation);
 
-        compilation.setTitle(newCompilationDto.getTitle());
-        compilation.setPinned(newCompilationDto.getPinned());
-        compilation.setEvents(new HashSet<>());
-
-        return compilation;
-    }
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "events", expression = "java(new java.util.HashSet<>())")
+    Compilation toModel(NewCompilationDto newCompilationDto);
 }

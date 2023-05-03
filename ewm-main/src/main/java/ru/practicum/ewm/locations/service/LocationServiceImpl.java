@@ -16,8 +16,8 @@ public class LocationServiceImpl implements LocationService {
     @Override
     @Transactional
     public LocationDto add(NewLocationDto newLocationDto) {
-        Location location = LocationMapper.toModel(newLocationDto);
+        Location location = LocationMapper.MAP.toModel(newLocationDto);
 
-        return LocationMapper.toDto(locationRepository.save(location));
+        return LocationMapper.MAP.toDto(locationRepository.save(location));
     }
 }

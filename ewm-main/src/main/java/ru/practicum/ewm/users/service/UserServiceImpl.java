@@ -25,16 +25,16 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDto add(NewUserDto newUserDto) {
-        User user = UserMapper.toModel(newUserDto);
+        User user = UserMapper.MAP.toModel(newUserDto);
 
-        return UserMapper.toDto(userRepository.save(user));
+        return UserMapper.MAP.toDto(userRepository.save(user));
     }
 
     @Override
     public Collection<UserDto> getAll(List<Long> ids, Integer from, Integer size) {
         Pageable pageable = PageRequest.of(from, size);
 
-        return UserMapper.toDto(userRepository.findAllUsersByIds(ids, pageable));
+        return UserMapper.MAP.toDto(userRepository.findAllUsersByIds(ids, pageable));
     }
 
     @Override

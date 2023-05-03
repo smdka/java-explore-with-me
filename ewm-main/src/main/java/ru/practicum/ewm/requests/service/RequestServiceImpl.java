@@ -65,12 +65,12 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public Collection<RequestDto> getById(Long userId) {
-        return RequestMapper.toDto(requestRepository.findAllByRequesterId(userId));
+        return RequestMapper.MAP.toDto(requestRepository.findAllByRequesterId(userId));
     }
 
     @Override
     public Collection<RequestDto> getByUserIdAndEventId(Long userId, Long eventId) {
-        return RequestMapper.toDto(requestRepository.findAllByEventId(eventId));
+        return RequestMapper.MAP.toDto(requestRepository.findAllByEventId(eventId));
     }
 
     @Override
@@ -80,7 +80,7 @@ public class RequestServiceImpl implements RequestService {
 
         request.setStatus(State.CANCELED);
 
-        return RequestMapper.toDto(request);
+        return RequestMapper.MAP.toDto(request);
     }
 
     private Request getRequestByRequesterIdAndId(Long userId, Long requestId) {
@@ -127,10 +127,10 @@ public class RequestServiceImpl implements RequestService {
     }
 
     private RequestDto saveRequest(Long eventId, Long userId, Boolean isRequestedModeration) {
-        Request request = RequestMapper.toModel(eventId, userId,
+        Request request = RequestMapper.MAP.toModel(eventId, userId,
                 isRequestedModeration ? State.PENDING : State.CONFIRMED);
 
-        return RequestMapper.toDto(requestRepository.save(request));
+        return RequestMapper.MAP.toDto(requestRepository.save(request));
     }
 
     private void validateNewRequestUpdateDto(NewRequestUpdateDto newRequestUpdateDto) {
@@ -198,7 +198,7 @@ public class RequestServiceImpl implements RequestService {
 
         requestRepository.save(request);
 
-        updatedRequests.add(RequestMapper.toDto(request));
+        updatedRequests.add(RequestMapper.MAP.toDto(request));
     }
 
     private void incrementEventConfirmedRequests(Event event) {
