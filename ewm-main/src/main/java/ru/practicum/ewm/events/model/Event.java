@@ -32,7 +32,7 @@ public class Event {
     @Column(columnDefinition = "varchar(2000)", nullable = false)
     private String annotation;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
 
