@@ -194,7 +194,7 @@ public class RequestServiceImpl implements RequestService {
             setRequestStatusAndSave(requestUpdateDto.getConfirmedRequests(),
                     request, newRequestUpdateDto.getStatus());
 
-            incrementEventConfirmedRequests(event);
+            increaseEventConfirmedRequests(event);
         }
     }
 
@@ -207,9 +207,7 @@ public class RequestServiceImpl implements RequestService {
         updatedRequests.add(RequestMapper.MAP.toDto(request));
     }
 
-    private void incrementEventConfirmedRequests(Event event) {
-        event.setConfirmedRequests(event.getConfirmedRequests() + 1);
-
-        eventRepository.save(event);
+    private void increaseEventConfirmedRequests(Event event) {
+        eventRepository.increaseConfirmedRequests(event.getId(), 1);
     }
 }

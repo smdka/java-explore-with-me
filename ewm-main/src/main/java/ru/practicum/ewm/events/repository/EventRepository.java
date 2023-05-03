@@ -3,6 +3,7 @@ package ru.practicum.ewm.events.repository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import ru.practicum.ewm.events.dto.State;
@@ -58,4 +59,8 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     @EntityGraph(value = "event")
     Event findFirstByCategoryId(Long categoryId);
+
+    @Modifying
+    @Query("UPDATE Event e SET e.confirmedRequests = e.confirmedRequests + :increment WHERE e.id = :eventId")
+    void increaseConfirmedRequests(@Param("eventId") Long eventId, @Param("increment") int increment);
 }
