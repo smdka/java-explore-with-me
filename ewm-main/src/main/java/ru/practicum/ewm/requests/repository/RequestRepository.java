@@ -23,4 +23,6 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
            "WHERE r.eventId IN :ids " +
            "GROUP BY r.eventId")
     Collection<RequestStat> getRequestsStats(@Param("ids") List<Long> ids);
+
+    long countByEventId(Long eventId);
 }

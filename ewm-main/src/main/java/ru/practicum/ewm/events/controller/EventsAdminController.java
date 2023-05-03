@@ -26,7 +26,7 @@ public class EventsAdminController {
                                             @RequestBody(required = false) NewEventDto newEventDto) {
         log.info("POST /admin/events/{}", eventId);
         log.info("Request body: {}", newEventDto);
-        return service.updateByEventId(eventId, newEventDto);
+        return service.updateById(eventId, newEventDto);
     }
 
     @GetMapping

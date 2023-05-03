@@ -28,7 +28,7 @@ public class StatisticClient extends BaseClient {
                 .build());
     }
 
-    public void createHit(EndpointHitDto endpointHitDto) {
+    public void addHit(EndpointHitDto endpointHitDto) {
         log.info(String.format("Statistic client createHit: endpointHitDto=%s", endpointHitDto));
         Gson gson = new Gson();
         ResponseEntity<Object> objectResponseEntity = post("/hit", endpointHitDto);
@@ -38,7 +38,7 @@ public class StatisticClient extends BaseClient {
     }
 
     public Collection<ViewStatsDto> getStats(String start, String end, List<String> uris, Boolean unique) {
-        log.info(String.format("Statistic client getStats: start=%s, end=%s, uris=%s, unique=%s", start, end, uris, unique));
+        log.info("Statistic client getStats: start={}, end={}, uris={}, unique={}", start, end, uris, unique);
         Gson gson = new Gson();
         Map<String, Object> parameters = Map.of(
                 "uris", String.join(",", uris),

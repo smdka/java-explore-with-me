@@ -48,7 +48,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional
-    public EventDto updateByEventId(Long eventId, NewEventDto newEventDto) {
+    public EventDto updateById(Long eventId, NewEventDto newEventDto) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException(String.format(EVENT_NOT_FOUND_MSG, eventId)));
 
@@ -229,14 +229,11 @@ public class EventServiceImpl implements EventService {
     private void createNewHit(String ip, String url) {
         String serviceName = "ewm-main-service";
 
-        statisticClient.createHit(new EndpointHitDto(serviceName, url, ip, LocalDateTime.now()));
+        statisticClient.addHit(new EndpointHitDto(serviceName, url, ip, LocalDateTime.now()));
     }
 
     private Collection<EventDto> sortEvents(SortBy sortBy, List<EventDto> eventDtos) {
-        if (sortBy == null) {
-            return eventDtos;
-        }
-        return sortBy.sort(eventDtos);
+        return sortBy == null ? eventDtos : sortBy.sort(eventDtos);
     }
 
     private Map<String, Long> getEventViewsMap(Collection<ViewStatsDto> viewStatDtosList) {

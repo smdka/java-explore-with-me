@@ -1,6 +1,8 @@
 package ru.practicum.ewm.requests.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.events.dto.State;
@@ -17,7 +19,8 @@ import ru.practicum.ewm.requests.repository.RequestRepository;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
+
+import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.exact;
 
 @Service
 @RequiredArgsConstructor
@@ -45,20 +48,46 @@ public class RequestServiceImpl implements RequestService {
 
         validateEventForRequest(userId, event);
 
-        List<Request> requests = new ArrayList<>(requestRepository.findAllByEventId(eventId));
+        checkIfRequestAlreadyExists(userId, eventId);
 
-        checkIfRequestAlreadyExists(userId, eventId, requests);
-        checkParticipantLimit(event, requests);
+        checkParticipantLimit(eventId, event);
 
         return saveRequest(eventId, userId, event.getRequestModeration());
     }
 
-    private void checkIfRequestAlreadyExists(Long userId, Long eventId, List<Request> requests) {
-        boolean requestByUserExists = requests.stream()
-                .map(Request::getRequesterId)
-                .anyMatch(requesterId -> Objects.equals(requesterId, userId));
+    private void validateEventForRequest(Long userId, Event event) {
+        validateEventInitiator(userId, event);
+        validateEventState(event);
+    }
 
-        if (requestByUserExists) {
+    private void validateEventInitiator(Long userId, Event event) {
+        if (event.getInitiator().getId().equals(userId)) {
+            throw new OperationException(REQUEST_SAME_USER_ID_EXCEPTION_MSG);
+        }
+    }
+
+    private void validateEventState(Event event) {
+        if (!event.getState().equals(State.PUBLISHED)) {
+            throw new OperationException(REQUEST_STATE_EXCEPTION_MESSAGE);
+        }
+    }
+    private void checkParticipantLimit(Long eventId, Event event) {
+        if (requestRepository.countByEventId(eventId) >= event.getParticipantLimit()) {
+            throw new OperationException(REQUEST_LIMIT_EXCEPTION_MESSAGE);
+        }
+    }
+
+    private void checkIfRequestAlreadyExists(Long userId, Long eventId) {
+        ExampleMatcher requesterMatcher = ExampleMatcher.matchingAny()
+                .withIgnorePaths("id")
+                .withMatcher("requester_id", exact());
+
+        Request request = new Request();
+        request.setRequesterId(userId);
+
+        Example<Request> example = Example.of(request, requesterMatcher);
+
+        if (requestRepository.exists(example)) {
             throw new OperationException(String.format(REQUEST_ALREADY_EXISTS_MSG, userId, eventId));
         }
     }
@@ -103,28 +132,6 @@ public class RequestServiceImpl implements RequestService {
         return requestUpdateDto;
     }
 
-    private void validateEventForRequest(Long userId, Event event) {
-        validateEventInitiator(userId, event);
-        validateEventState(event);
-    }
-
-    private void validateEventInitiator(Long userId, Event event) {
-        if (event.getInitiator().getId().equals(userId)) {
-            throw new OperationException(REQUEST_SAME_USER_ID_EXCEPTION_MSG);
-        }
-    }
-
-    private void validateEventState(Event event) {
-        if (!event.getState().equals(State.PUBLISHED)) {
-            throw new OperationException(REQUEST_STATE_EXCEPTION_MESSAGE);
-        }
-    }
-
-    private void checkParticipantLimit(Event event, List<Request> requests) {
-        if (requests.size() >= event.getParticipantLimit()) {
-            throw new OperationException(REQUEST_LIMIT_EXCEPTION_MESSAGE);
-        }
-    }
 
     private RequestDto saveRequest(Long eventId, Long userId, Boolean isRequestedModeration) {
         Request request = RequestMapper.MAP.toModel(eventId, userId,
