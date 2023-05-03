@@ -57,7 +57,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public void delete(Long categoryId) {
-        if (!eventRepository.existsByCategoryId(categoryId)) {
+        if (!eventRepository.findAllByCategoryId(categoryId).isEmpty()) {
             throw new OperationException(String.format(CATEGORY_HAS_RELATED_EVENTS_MSG, categoryId));
         }
 
