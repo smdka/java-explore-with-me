@@ -57,7 +57,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public void delete(Long categoryId) {
-        if (eventRepository.findFirstByCategoryId(categoryId) == null) {
+        if (eventRepository.findFirstByCategoryId(categoryId) != null) {
             throw new OperationException(String.format(CATEGORY_HAS_RELATED_EVENTS_MSG, categoryId));
         }
 
