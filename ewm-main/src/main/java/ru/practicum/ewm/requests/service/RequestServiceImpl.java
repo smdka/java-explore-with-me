@@ -71,6 +71,7 @@ public class RequestServiceImpl implements RequestService {
             throw new OperationException(REQUEST_STATE_EXCEPTION_MESSAGE);
         }
     }
+
     private void checkParticipantLimit(Long eventId, Event event) {
         if (requestRepository.countByEventId(eventId) >= event.getParticipantLimit()) {
             throw new OperationException(REQUEST_LIMIT_EXCEPTION_MESSAGE);
