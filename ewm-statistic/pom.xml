@@ -13,7 +13,7 @@
     <artifactId>ewm-statistic</artifactId>
     <packaging>pom</packaging>
 
-    <name>Statistic service</name>
+    <name>Explore With Me - Statistic service</name>
 
     <modules>
         <module>dto</module>
