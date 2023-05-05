@@ -43,8 +43,8 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public CommentDto update(Long userId, Long commentId, NewCommentDto commentDto) {
-        Comment comment = commentRepository.findById(commentId).
-                orElseThrow(() -> new NotFoundException(String.format(COMMENT_NOT_FOUND_MSG, commentId)));
+        Comment comment = commentRepository.findById(commentId)
+                        .orElseThrow(() -> new NotFoundException(String.format(COMMENT_NOT_FOUND_MSG, commentId)));
 
         if (!comment.getAuthor().getId().equals(userId)) {
             throw new OperationException("Пользователь не может редактировать чужой комментарий");
@@ -56,8 +56,8 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentDto get(Long userId, Long commentId) {
-        Comment comment = commentRepository.findById(commentId).
-                orElseThrow(() -> new NotFoundException(String.format(COMMENT_NOT_FOUND_MSG, commentId)));
+        Comment comment = commentRepository.findById(commentId)
+                        .orElseThrow(() -> new NotFoundException(String.format(COMMENT_NOT_FOUND_MSG, commentId)));
 
         if (!comment.getAuthor().getId().equals(userId)) {
             throw new OperationException("Пользователь может получить только свой комментарий");

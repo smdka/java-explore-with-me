@@ -21,5 +21,6 @@ public interface CommentMapper {
 
     List<CommentDto> toDto(Collection<Comment> comments);
 
+    @Mapping(target = "id", source = "commentDto.id")
     Comment toModel(NewCommentDto commentDto, User author, Event event);
 }
