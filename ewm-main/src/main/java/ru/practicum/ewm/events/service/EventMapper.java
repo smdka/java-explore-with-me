@@ -1,5 +1,6 @@
 package ru.practicum.ewm.events.service;
 
+import lombok.experimental.UtilityClass;
 import ru.practicum.ewm.categories.dto.CategoryDto;
 import ru.practicum.ewm.categories.model.Category;
 import ru.practicum.ewm.events.dto.EventDto;
@@ -17,11 +18,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@UtilityClass
 public class EventMapper {
-
-    private EventMapper() {
-    }
-
     public static Event toModel(NewEventDto newEventDto,
                                 LocationDto locationDto,
                                 UserDto userDto,
