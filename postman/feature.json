@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "9dba070c-72de-4ce6-bcfc-383ad2ce6f1b",
-		"name": "Explore With Me - Comments Feature",
+		"_postman_id": "f4aa1638-e3fe-4844-91a1-6c4ab5c954ec",
+		"name": "Test Explore With Me - Feature comments Copy",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -19,10 +19,10 @@
 							"    let comment;\r",
 							"    try {\r",
 							"        const user = await api.addUser(rnd.getUser());\r",
-							"        pm.collectionVariables.set(\"userId\", user.id)\r",
+							"        pm.collectionVariables.set(\"uid\", user.id)\r",
 							"        const category = await api.addCategory(rnd.getCategory());\r",
 							"        const event = await api.addEvent(user.id, rnd.getEvent(category.id));\r",
-							"        pm.collectionVariables.set(\"eventId\", event.id)\r",
+							"        pm.collectionVariables.set(\"eid\", event.id)\r",
 							"        comment = rnd.getComment();\r",
 							"    } catch(err) {\r",
 							"        console.error(\"Ошибка при подготовке тестовых данных.\", err);\r",
@@ -76,7 +76,7 @@
 							"\r",
 							"pm.test(\"Данные в ответе должны соответствовать данным в запросе\", function() {\r",
 							"pm.expect(target.id).to.not.be.null;\r",
-							"pm.expect(source.text).equal(target.text, 'Текст комментария должен соответствовать тексту добавленного комментария');\r",
+							"pm.expect(source.text).equal(target.text, 'Сообщение должно совпадать с отправленым');\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -89,12 +89,12 @@
 					{
 						"key": "Content-Type",
 						"value": "application/json",
-						"type": "default"
+						"type": "text"
 					},
 					{
 						"key": "Accept",
 						"value": "application/json",
-						"type": "default"
+						"type": "text"
 					}
 				],
 				"body": {
@@ -102,7 +102,7 @@
 					"raw": "{{request_body}}"
 				},
 				"url": {
-					"raw": "{{baseUrl}}/users/:userId/comment?eventId={{eventId}}",
+					"raw": "{{baseUrl}}/users/:userId/comment?eventId={{eid}}",
 					"host": [
 						"{{baseUrl}}"
 					],
@@ -114,13 +114,14 @@
 					"query": [
 						{
 							"key": "eventId",
-							"value": "{{eventId}}"
+							"value": "{{eid}}"
 						}
 					],
 					"variable": [
 						{
 							"key": "userId",
-							"value": "{{userId}}"
+							"value": "{{uid}}",
+							"description": "(Required) id текущего пользователя"
 						}
 					]
 				}
@@ -128,7 +129,7 @@
 			"response": []
 		},
 		{
-			"name": "Получение комментария по идентификатору",
+			"name": "Получение информации о комментарии по индентификатору",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -140,10 +141,10 @@
 							"\r",
 							"    try {\r",
 							"        const user = await api.addUser(rnd.getUser());\r",
-							"        pm.collectionVariables.set(\"userId\", user.id)\r",
+							"        pm.collectionVariables.set(\"uid\", user.id)\r",
 							"        const category = await api.addCategory(rnd.getCategory());\r",
 							"        const event = await api.addEvent(user.id, rnd.getEvent(category.id));\r",
-							"        pm.collectionVariables.set(\"eventId\", event.id)\r",
+							"        pm.collectionVariables.set(\"eid\", event.id)\r",
 							"        const comment = await api.addComment(user.id, event.id, rnd.getComment());\r",
 							"        pm.collectionVariables.set('source', comment);\r",
 							"        pm.collectionVariables.set('commentId', comment.id);\r",
@@ -194,7 +195,7 @@
 							"\r",
 							"pm.test(\"Данные в ответе должны соответствовать данным в запросе\", function () {\r",
 							"    pm.expect(source.id).equal(target.id, 'Идентификатор комментария должен соответствовать идентификатору комментария добавленной ранее');\r",
-							"    pm.expect(source.text).equal(target.text, 'Текст комментария должен соответствовать тексту комментария добавленного ранее');\r",
+							"    pm.expect(source.text).equal(target.text, 'Название комментария должно соответствовать названию комментария добавленной ранее');\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -207,7 +208,7 @@
 					{
 						"key": "Accept",
 						"value": "application/json",
-						"type": "default"
+						"type": "text"
 					}
 				],
 				"url": {
@@ -224,7 +225,7 @@
 					"variable": [
 						{
 							"key": "userId",
-							"value": "{{userId}}"
+							"value": "{{uid}}"
 						},
 						{
 							"key": "commentId",
@@ -248,10 +249,10 @@
 							"\r",
 							"    try {\r",
 							"        const user = await api.addUser(rnd.getUser());\r",
-							"        pm.collectionVariables.set(\"userId\", user.id)\r",
+							"        pm.collectionVariables.set(\"uid\", user.id)\r",
 							"        const category = await api.addCategory(rnd.getCategory());\r",
 							"        const event = await api.addEvent(user.id, rnd.getEvent(category.id));\r",
-							"        pm.collectionVariables.set(\"eventId\", event.id)\r",
+							"        pm.collectionVariables.set(\"eid\", event.id)\r",
 							"        const comment = await api.addComment(user.id, event.id, rnd.getComment());\r",
 							"        pm.collectionVariables.set('commentId', comment.id);\r",
 							"    } catch(err) {\r",
@@ -284,7 +285,8 @@
 						"exec": [
 							"pm.test(\"Ответ должен содержать код статуса 204\", function () {\r",
 							"    pm.response.to.have.status(204);\r",
-							"});"
+							"});\r",
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -314,7 +316,7 @@
 			"response": []
 		},
 		{
-			"name": "Получение комментариев пользователя",
+			"name": "Получение комментариев по пользователю",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -326,7 +328,7 @@
 							"\r",
 							"    try {\r",
 							"        const user = await api.addUser(rnd.getUser());\r",
-							"        pm.collectionVariables.set(\"userId\", user.id)\r",
+							"        pm.collectionVariables.set(\"uid\", user.id)\r",
 							"        const category = await api.addCategory(rnd.getCategory());\r",
 							"        const event = await api.addEvent(user.id, rnd.getEvent(category.id));\r",
 							"        const comment = await api.addComment(user.id, event.id, rnd.getComment());\r",
@@ -379,8 +381,8 @@
 							"});\r",
 							"\r",
 							"pm.test(\"Данные в ответе должны соответствовать данным в запросе\", function () {\r",
-							"    pm.expect(source.id).equal(founded.id, 'Идентификатор комментария должен соответствовать идентификатору добавленного ранее');\r",
-							"    pm.expect(source.text).equal(founded.text, 'Текст комментария должен соответствовать тексту комментария добавленного ранее');\r",
+							"    pm.expect(source.id).equal(founded.id, 'Идентификатор комментария должен соответствовать идентификатору добавленной ранее');\r",
+							"    pm.expect(source.text).equal(founded.text, 'Сообщение должно соответствовать сообщению добавленной ранее');\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -393,7 +395,7 @@
 					{
 						"key": "Accept",
 						"value": "application/json",
-						"type": "default"
+						"type": "text"
 					}
 				],
 				"url": {
@@ -419,7 +421,7 @@
 					"variable": [
 						{
 							"key": "userId",
-							"value": "{{userId}}"
+							"value": "{{uid}}"
 						}
 					]
 				}
@@ -427,7 +429,7 @@
 			"response": []
 		},
 		{
-			"name": "Получение комментариев события",
+			"name": "Получение комментариев по событию",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -439,10 +441,10 @@
 							"\r",
 							"    try {\r",
 							"        const user = await api.addUser(rnd.getUser());\r",
-							"        pm.collectionVariables.set(\"userId\", user.id)\r",
+							"        pm.collectionVariables.set(\"uid\", user.id)\r",
 							"        const category = await api.addCategory(rnd.getCategory());\r",
 							"        const event = await api.addEvent(user.id, rnd.getEvent(category.id));\r",
-							"        pm.collectionVariables.set(\"eventId\", event.id);\r",
+							"        pm.collectionVariables.set(\"eid\", event.id);\r",
 							"        await api.publishEvent(event.id);\r",
 							"        const comment = await api.addComment(user.id, event.id, rnd.getComment());\r",
 							"        pm.collectionVariables.set('source', comment);\r",
@@ -495,7 +497,7 @@
 							"\r",
 							"pm.test(\"Данные в ответе должны соответствовать данным в запросе\", function () {\r",
 							"    pm.expect(source.id).equal(founded.id, 'Идентификатор комментария должен соответствовать идентификатору добавленной ранее');\r",
-							"    pm.expect(source.text).equal(founded.text, 'Текст комментария должен соответствовать тексту комментария добавленного ранее');\r",
+							"    pm.expect(source.text).equal(founded.text, 'Сообщение должно соответствовать сообщению добавленной ранее');\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -508,7 +510,7 @@
 					{
 						"key": "Accept",
 						"value": "application/json",
-						"type": "default"
+						"type": "text"
 					}
 				],
 				"url": {
@@ -533,7 +535,7 @@
 					"variable": [
 						{
 							"key": "eventId",
-							"value": "{{eventId}}"
+							"value": "{{eid}}"
 						}
 					]
 				}
@@ -553,14 +555,14 @@
 							"\r",
 							"    try {\r",
 							"        const user = await api.addUser(rnd.getUser());\r",
-							"        pm.collectionVariables.set(\"userId\", user.id)\r",
+							"        pm.collectionVariables.set(\"uid\", user.id)\r",
 							"        const category = await api.addCategory(rnd.getCategory());\r",
 							"        const event = await api.addEvent(user.id, rnd.getEvent(category.id));\r",
 							"        const comment = await api.addComment(user.id, event.id, rnd.getComment());\r",
 							"        let comment2 = rnd.getComment();\r",
 							"        pm.collectionVariables.set('source', comment2);\r",
 							"        pm.collectionVariables.set('commentId', comment.id);\r",
-							"        pm.collectionVariables.set(\"eventId\", event.id);\r",
+							"        pm.collectionVariables.set(\"eid\", event.id);\r",
 							"        pm.request.body.update({\r",
 							"            mode: 'raw',\r",
 							"            raw: comment2,\r",
@@ -612,7 +614,7 @@
 							"});\r",
 							"\r",
 							"pm.test(\"Данные в ответе должны соответствовать данным в запросе\", function() {\r",
-							"pm.expect(source.text).equal(target.text, 'Текст комментария должен совпадать с отправленым');\r",
+							"pm.expect(source.text).equal(target.text, 'Сообщение должно совпадать с отправленым');\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -625,7 +627,7 @@
 					{
 						"key": "Accept",
 						"value": "application/json",
-						"type": "default"
+						"type": "text"
 					}
 				],
 				"body": {
@@ -646,7 +648,7 @@
 					"variable": [
 						{
 							"key": "userId",
-							"value": "{{userId}}"
+							"value": "{{uid}}"
 						},
 						{
 							"key": "commentId",
@@ -681,6 +683,10 @@
 					"",
 					"    async addEvent(userId, event, verbose=null) {",
 					"        return this.post(\"/users/\" + userId + \"/events\", event, \"Ошибка при добавлении нового события: \", verbose);",
+					"    }",
+					"",
+					"    async addComment(userId, eventId, comment, verbose=null) {",
+					"        return this.post('/users/' + userId + '/comment?eventId=' + eventId, comment, \"Ошибка при добавлении комментария: \", verbose)",
 					"    }",
 					"",
 					"    async addCompilation(compilation, verbose=null) {",
@@ -802,6 +808,12 @@
 					"        }",
 					"    }",
 					"",
+					"    getComment() {",
+					"        return {",
+					"            text: pm.variables.replaceIn('{{$randomLoremParagraph}}')",
+					"        };",
+					"    }",
+					"",
 					"    getCompilation(...eventIds) {",
 					"        return {",
 					"            title: pm.variables.replaceIn('{{$randomLoremSentence}}'),",
@@ -838,92 +850,91 @@
 		{
 			"key": "baseUrl",
 			"value": "http://localhost:8080",
-			"type": "default"
+			"type": "string"
 		},
 		{
 			"key": "name",
 			"value": "",
-			"type": "default"
+			"type": "string"
 		},
 		{
 			"key": "usersCount",
 			"value": "1",
-			"type": "default"
+			"type": "string"
 		},
 		{
-			"key": "catId",
+			"key": "catid",
 			"value": "1",
-			"type": "default"
+			"type": "string"
 		},
 		{
 			"key": "request_body",
 			"value": "",
-			"type": "default"
+			"type": "string"
 		},
 		{
-			"key": "email",
+			"key": "mail",
 			"value": "",
-			"type": "default"
+			"type": "string"
 		},
 		{
 			"key": "response",
 			"value": "",
-			"type": "default"
+			"type": "string"
 		},
 		{
-			"key": "userId",
+			"key": "uid",
 			"value": "1",
-			"type": "default"
+			"type": "string"
 		},
 		{
-			"key": "catName",
+			"key": "catname",
 			"value": "",
-			"type": "default"
+			"type": "string"
 		},
 		{
-			"key": "eventId",
+			"key": "eid",
 			"value": "1",
-			"type": "default"
+			"type": "string"
 		},
 		{
-			"key": "compId",
+			"key": "compid",
 			"value": "1",
-			"type": "default"
+			"type": "string"
 		},
 		{
 			"key": "toCheck",
 			"value": "",
-			"type": "default"
+			"type": "string"
 		},
 		{
-			"key": "newData",
+			"key": "newDataToSet",
 			"value": "",
-			"type": "default"
+			"type": "string"
 		},
 		{
-			"key": "userId1",
+			"key": "uid1",
 			"value": "",
-			"type": "default"
+			"type": "string"
 		},
 		{
-			"key": "requestId",
+			"key": "reqid",
 			"value": "1",
-			"type": "default"
+			"type": "string"
 		},
 		{
-			"key": "catId1",
+			"key": "catId",
 			"value": "",
-			"type": "default"
+			"type": "string"
 		},
 		{
 			"key": "commentId",
 			"value": "",
-			"type": "default"
+			"type": "string"
 		},
 		{
 			"key": "source",
-			"value": "",
-			"type": "default"
+			"value": ""
 		}
 	]
 }
