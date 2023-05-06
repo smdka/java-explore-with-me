@@ -16,12 +16,11 @@ import java.util.List;
 public interface CommentMapper {
     CommentMapper MAP = Mappers.getMapper(CommentMapper.class);
 
-    @Mapping(target = "id", ignore = true)
     CommentDto toDto(Comment comment);
 
     List<CommentDto> toDto(Collection<Comment> comments);
 
-    @Mapping(target = "id", source = "commentDto.id")
+    @Mapping(target = "id", ignore = true)
     @Mapping(target = "author", source = "author")
     @Mapping(target = "event", source = "event")
     @Mapping(target = "createdOn", ignore = true)
