@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 import ru.practicum.ewm.events.model.Event;
 import ru.practicum.ewm.users.model.User;
 
@@ -42,5 +43,6 @@ public class Comment {
     private String text;
 
     @Column(name = "created_on")
+    @CreationTimestamp
     private LocalDateTime createdOn;
 }
