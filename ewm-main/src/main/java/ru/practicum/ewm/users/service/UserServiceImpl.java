@@ -20,7 +20,7 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
-    private static final String USER_NOT_FOUND_MSG = "Пользователь с id=%s не найден";
+    public static final String USER_NOT_FOUND_MSG = "Пользователь с id=%s не найден";
 
     @Override
     @Transactional
