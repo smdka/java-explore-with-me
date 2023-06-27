@@ -10,6 +10,8 @@ import ru.practicum.ewm.categories.dto.CategoryDto;
 import ru.practicum.ewm.dto.EndpointHitDto;
 import ru.practicum.ewm.dto.ViewStatsDto;
 import ru.practicum.ewm.events.dto.EventDto;
+import ru.practicum.ewm.events.dto.EventsAdminCriteria;
+import ru.practicum.ewm.events.dto.EventsPublicCriteria;
 import ru.practicum.ewm.events.dto.NewEventDto;
 import ru.practicum.ewm.events.dto.State;
 import ru.practicum.ewm.events.model.Event;
@@ -70,11 +72,11 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Collection<EventDto> getAll(GetAllEventsArgs getAllEventsArgs) {
-        Pageable pageable = PageRequest.of(getAllEventsArgs.getFrom(), getAllEventsArgs.getSize());
+    public Collection<EventDto> getAll(EventsAdminCriteria eventsAdminCriteria) {
+        Pageable pageable = PageRequest.of(eventsAdminCriteria.getFrom(), eventsAdminCriteria.getSize());
 
-        List<Event> events = eventRepository.findAll(getAllEventsArgs.getRangeStart(), getAllEventsArgs.getRangeEnd(),
-                getAllEventsArgs.getUsers(), getAllEventsArgs.getStates(), getAllEventsArgs.getCategories(), pageable);
+        List<Event> events = eventRepository.findAll(eventsAdminCriteria.getRangeStart(), eventsAdminCriteria.getRangeEnd(),
+                eventsAdminCriteria.getUsers(), eventsAdminCriteria.getStates(), eventsAdminCriteria.getCategories(), pageable);
 
         Map<String, Long> eventViewsMap = getEventViewsMap(getEventsViewsList(events));
 
@@ -127,18 +129,18 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Collection<EventDto> getPublicEvents(GetPublicEventsArgs getPublicEventsArgs) {
-        createNewHit(getPublicEventsArgs.getIp(), getPublicEventsArgs.getUrl());
+    public Collection<EventDto> getPublicEvents(EventsPublicCriteria eventsPublicCriteria, String ip, String url) {
+        createNewHit(ip, url);
 
-        Pageable pageable = PageRequest.of(getPublicEventsArgs.getFrom(), getPublicEventsArgs.getSize());
+        Pageable pageable = PageRequest.of(eventsPublicCriteria.getFrom(), eventsPublicCriteria.getSize());
         List<Event> events = eventRepository.findAllPublic(
                 pageable,
-                getPublicEventsArgs.getState(),
-                getPublicEventsArgs.getText(),
-                getPublicEventsArgs.getCategories(),
-                getPublicEventsArgs.getPaid(),
-                getPublicEventsArgs.getRangeStart(),
-                getPublicEventsArgs.getRangeEnd());
+                eventsPublicCriteria.getState(),
+                eventsPublicCriteria.getText(),
+                eventsPublicCriteria.getCategories(),
+                eventsPublicCriteria.getPaid(),
+                eventsPublicCriteria.getRangeStart(),
+                eventsPublicCriteria.getRangeEnd());
 
         List<Long> eventIds = events.stream()
                 .map(Event::getId)
@@ -150,9 +152,9 @@ public class EventServiceImpl implements EventService {
 
         List<EventDto> eventDtos = EventMapper.toDto(events, eventViewsMap);
 
-        List<EventDto> sortedEvents = new ArrayList<>(sortEvents(getPublicEventsArgs.getSort(), eventDtos));
+        List<EventDto> sortedEvents = new ArrayList<>(sortEvents(eventsPublicCriteria.getSort(), eventDtos));
 
-        return filterEventsByAvailable(sortedEvents, requestStats, getPublicEventsArgs.isOnlyAvailable());
+        return filterEventsByAvailable(sortedEvents, requestStats, eventsPublicCriteria.isOnlyAvailable());
     }
 
     @Override

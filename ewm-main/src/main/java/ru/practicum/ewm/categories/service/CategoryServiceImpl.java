@@ -20,12 +20,12 @@ import java.util.List;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
+    private static final String CATEGORY_NOT_FOUND_MSG = "Категория с id=%s не найдена";
     private static final String CATEGORY_HAS_RELATED_EVENTS_MSG = "С категорией с id=%d связаны события";
-    private final CategoryRepository categoryRepository;
 
+    private final CategoryRepository categoryRepository;
     private final EventRepository eventRepository;
 
-    private static final String CATEGORY_NOT_FOUND_MSG = "Категория с id=%s не найдена";
 
     @Override
     public Collection<CategoryDto> getAll(Integer from, Integer size) {

@@ -2,9 +2,13 @@ package ru.practicum.ewm.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.ewm.dto.EndpointHitDto;
 import ru.practicum.ewm.dto.ViewStatsDto;
 import ru.practicum.ewm.service.EndpointHitService;
@@ -20,7 +24,7 @@ import java.util.List;
 public class StatisticController {
     private final EndpointHitService service;
 
-    @PostMapping("hit")
+    @PostMapping( "${stats-server.hit.endpoint}")
     @ResponseStatus(HttpStatus.CREATED)
     public void post(@Valid @RequestBody EndpointHitDto endpointHitDto) {
         log.info("POST /hit");
@@ -28,9 +32,9 @@ public class StatisticController {
         service.add(endpointHitDto);
     }
 
-    @GetMapping("stats")
-    public Collection<ViewStatsDto> get(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime start,
-                                        @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime end,
+    @GetMapping("${stats-server.stats.endpoint}")
+    public Collection<ViewStatsDto> get(@RequestParam LocalDateTime start,
+                                        @RequestParam LocalDateTime end,
                                         @RequestParam(required = false) List<String> uris,
                                         boolean unique) {
         log.info("GET /stats?start={}&end={}&uris={}&unique={}", start, end, uris, unique);
