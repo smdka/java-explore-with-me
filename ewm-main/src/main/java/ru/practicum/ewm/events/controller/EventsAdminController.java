@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.ewm.events.dto.EventDto;
 import ru.practicum.ewm.events.dto.NewEventDto;
 import ru.practicum.ewm.events.service.EventService;
-import ru.practicum.ewm.events.service.EventsAdminCriteria;
+import ru.practicum.ewm.events.dto.EventsAdminCriteria;
 
 import java.util.Collection;
 

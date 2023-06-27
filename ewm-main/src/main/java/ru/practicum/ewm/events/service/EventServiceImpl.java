@@ -10,6 +10,8 @@ import ru.practicum.ewm.categories.dto.CategoryDto;
 import ru.practicum.ewm.dto.EndpointHitDto;
 import ru.practicum.ewm.dto.ViewStatsDto;
 import ru.practicum.ewm.events.dto.EventDto;
+import ru.practicum.ewm.events.dto.EventsAdminCriteria;
+import ru.practicum.ewm.events.dto.EventsPublicCriteria;
 import ru.practicum.ewm.events.dto.NewEventDto;
 import ru.practicum.ewm.events.dto.State;
 import ru.practicum.ewm.events.model.Event;

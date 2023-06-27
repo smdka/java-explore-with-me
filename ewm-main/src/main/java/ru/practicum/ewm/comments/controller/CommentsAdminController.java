@@ -3,6 +3,7 @@ package ru.practicum.ewm.comments.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.comments.dto.CommentDto;
 import ru.practicum.ewm.comments.service.CommentService;
@@ -26,8 +27,9 @@ public class CommentsAdminController {
 
     @DeleteMapping("/{commentId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long commentId) {
+    public ResponseEntity<Object> delete(@PathVariable Long commentId) {
         log.info("DELETE /admin/comment/{}", commentId);
         commentService.delete(commentId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

@@ -8,10 +8,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.ewm.events.dto.EventDto;
 import ru.practicum.ewm.events.service.EventService;
-import ru.practicum.ewm.events.service.EventsPublicCriteria;
+import ru.practicum.ewm.events.dto.EventsPublicCriteria;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Collection;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Slf4j
 @RestController
@@ -31,13 +34,39 @@ public class EventsPublicController {
     }
 
     @GetMapping("/{eventId}")
-    public EventDto getById(@PathVariable Long eventId,
-                            HttpServletRequest request) {
+    public EventDto getById(@PathVariable Long eventId, HttpServletRequest request) {
         log.info("GET /events/{}", eventId);
 
         String ip = request.getRemoteAddr();
         String url = request.getRequestURI();
 
-        return eventService.getPublicEventById(eventId, ip, url);
+        EventDto response = eventService.getPublicEventById(eventId, ip, url);
+
+        response.add(linkTo(methodOn(EventsAdminController.class)
+                        .getAll(null))
+                        .withRel("getAllEvents"),
+                linkTo(methodOn(EventsAdminController.class)
+                        .patchByUserIdAndEventId(eventId, null))
+                        .withRel("updateEvent"),
+                linkTo(methodOn(EventsPrivateController.class)
+                        .getByUserId(null, null, null))
+                        .withRel("getEventByUserId"),
+                linkTo(methodOn(EventsPrivateController.class)
+                        .getByUserIdAndEventId(null, null))
+                        .withRel("getEventByUserIdAndEventId"),
+                linkTo(methodOn(EventsPrivateController.class)
+                        .post(null, null))
+                        .withRel("createEvent"),
+                linkTo(methodOn(EventsPrivateController.class)
+                        .updateByUserIdAndEventId(null, eventId, null))
+                        .withRel("updateEvent"),
+                linkTo(methodOn(EventsPublicController.class)
+                        .getAll(request, null))
+                        .withRel("getAllEvents"),
+                linkTo(methodOn(EventsPublicController.class)
+                        .getById(eventId, request))
+                        .withSelfRel());
+
+        return response;
     }
 }

@@ -3,6 +3,7 @@ package ru.practicum.ewm.compilations.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.compilations.dto.CompilationDto;
 import ru.practicum.ewm.compilations.dto.NewCompilationDto;
@@ -39,8 +40,9 @@ public class CompilationsAdminController {
 
     @DeleteMapping("/{compId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long compId) {
+    public ResponseEntity<Object> delete(@PathVariable Long compId) {
         log.info("DELETE /admin/compilations/{}", compId);
         service.delete(compId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
