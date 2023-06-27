@@ -2,13 +2,16 @@ package ru.practicum.ewm.events.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.ewm.events.dto.EventDto;
-import ru.practicum.ewm.events.service.SortBy;
 import ru.practicum.ewm.events.dto.State;
 import ru.practicum.ewm.events.service.EventService;
 import ru.practicum.ewm.events.service.GetPublicEventsArgs;
+import ru.practicum.ewm.events.service.SortBy;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
@@ -26,8 +29,8 @@ public class EventsPublicController {
     public Collection<EventDto> getAll(@RequestParam(required = false) String text,
                                        @RequestParam(required = false) List<Long> categories,
                                        @RequestParam(required = false) Boolean paid,
-                                       @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
-                                       @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
+                                       @RequestParam(required = false) LocalDateTime rangeStart,
+                                       @RequestParam(required = false) LocalDateTime rangeEnd,
                                        @RequestParam(defaultValue = "false") boolean onlyAvailable,
                                        @RequestParam(required = false) SortBy sort,
                                        @RequestParam(defaultValue = "0") Integer from,

@@ -2,13 +2,18 @@ package ru.practicum.ewm.events.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.ewm.events.dto.EventDto;
 import ru.practicum.ewm.events.dto.NewEventDto;
 import ru.practicum.ewm.events.dto.State;
-import ru.practicum.ewm.events.service.GetAllEventsArgs;
 import ru.practicum.ewm.events.service.EventService;
+import ru.practicum.ewm.events.service.GetAllEventsArgs;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -30,8 +35,8 @@ public class EventsAdminController {
     }
 
     @GetMapping
-    public Collection<EventDto> getAll(@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
-                                       @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
+    public Collection<EventDto> getAll(@RequestParam(required = false) LocalDateTime rangeStart,
+                                       @RequestParam(required = false) LocalDateTime rangeEnd,
                                        @RequestParam(required = false) List<Long> users,
                                        @RequestParam(required = false) List<State> states,
                                        @RequestParam(required = false) List<Long> categories,
