@@ -5,18 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.ewm.events.dto.EventDto;
-import ru.practicum.ewm.events.dto.State;
 import ru.practicum.ewm.events.service.EventService;
-import ru.practicum.ewm.events.service.GetPublicEventsArgs;
-import ru.practicum.ewm.events.service.SortBy;
+import ru.practicum.ewm.events.service.EventsPublicCriteria;
 
 import javax.servlet.http.HttpServletRequest;
-import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -26,24 +21,13 @@ public class EventsPublicController {
     private final EventService eventService;
 
     @GetMapping
-    public Collection<EventDto> getAll(@RequestParam(required = false) String text,
-                                       @RequestParam(required = false) List<Long> categories,
-                                       @RequestParam(required = false) Boolean paid,
-                                       @RequestParam(required = false) LocalDateTime rangeStart,
-                                       @RequestParam(required = false) LocalDateTime rangeEnd,
-                                       @RequestParam(defaultValue = "false") boolean onlyAvailable,
-                                       @RequestParam(required = false) SortBy sort,
-                                       @RequestParam(defaultValue = "0") Integer from,
-                                       @RequestParam(defaultValue = "10") Integer size,
-                                       HttpServletRequest request) {
-        log.info("GET /events?text={}&categories={}&paid={}&rangeStart={}&rangeEnd={}&onlyAvailable={}&sort={}&from={}&size={}",
-                text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size);
+    public Collection<EventDto> getAll(HttpServletRequest request, EventsPublicCriteria eventsPublicCriteria) {
+        log.info("GET /events?{}", eventsPublicCriteria);
 
         String ip = request.getRemoteAddr();
         String url = request.getRequestURI();
 
-        return eventService.getPublicEvents(new GetPublicEventsArgs(
-                from, size, State.PUBLISHED, text, categories, paid, rangeStart, rangeEnd, sort, onlyAvailable, ip, url));
+        return eventService.getPublicEvents(eventsPublicCriteria, ip, url);
     }
 
     @GetMapping("/{eventId}")

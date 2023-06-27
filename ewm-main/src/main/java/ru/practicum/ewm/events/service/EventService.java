@@ -10,7 +10,7 @@ import java.util.Collection;
 public interface EventService {
     EventDto update(Long eventId, NewEventDto newEventDto);
 
-    Collection<EventDto> getAll(GetAllEventsArgs getAllEventsArgs);
+    Collection<EventDto> getAll(EventsAdminCriteria eventsAdminCriteria);
 
     EventDto add(NewEventDto newEventDto, UserDto userDto, CategoryDto categoryDto);
 
@@ -20,7 +20,7 @@ public interface EventService {
 
     EventDto updateByUserIdAndEventId(Long userId, Long eventId, NewEventDto newEventDto);
 
-    Collection<EventDto> getPublicEvents(GetPublicEventsArgs getPublicEventsArgs);
+    Collection<EventDto> getPublicEvents(EventsPublicCriteria eventsPublicCriteria, String ip, String url);
 
     EventDto getPublicEventById(Long eventId, String ip, String url);
 }

@@ -12,17 +12,12 @@ import java.util.List;
 @Getter
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public class GetPublicEventsArgs {
-    Integer from;
-    Integer size;
-    State state;
-    String text;
-    List<Long> categories;
-    Boolean paid;
+public class EventsAdminCriteria {
     LocalDateTime rangeStart;
     LocalDateTime rangeEnd;
-    SortBy sort;
-    boolean onlyAvailable;
-    String ip;
-    String url;
+    List<Long> users;
+    List<State> states;
+    List<Long> categories;
+    int from = 0;
+    int size = 10;
 }
