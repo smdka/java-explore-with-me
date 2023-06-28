@@ -20,6 +20,7 @@
 	<modules>
 		<module>ewm-statistic</module>
 		<module>ewm-main</module>
+		<module>configserver</module>
 	</modules>
 
 	<properties>
