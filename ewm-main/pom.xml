@@ -11,7 +11,7 @@
     <artifactId>ewm-main</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
-    <name>Explore With Me - Main Service</name>
+    <name>Main Service</name>
 
     <properties>
         <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>

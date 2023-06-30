@@ -8,14 +8,17 @@
         <version>2.7.13</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <artifactId>configserver</artifactId>
+    <groupId>ru.practicum</groupId>
+    <artifactId>eurekaserver</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>Config server</name>
-    <description>Configuration server based on Spring Cloud Config</description>
+    <name>Eureka server</name>
+    <description>Service agent using Netflix Eureka</description>
+
     <properties>
         <java.version>11</java.version>
         <spring-cloud.version>2021.0.7</spring-cloud.version>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -24,12 +27,27 @@
 
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-config-server</artifactId>
+            <artifactId>spring-cloud-starter-config</artifactId>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-bootstrap</artifactId>
+            <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.cloud</groupId>
+                    <artifactId>spring-cloud-starter-ribbon</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.netflix.ribbon</groupId>
+                    <artifactId>ribbon-eureka</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-loadbalancer</artifactId>
         </dependency>
 
         <dependency>
@@ -38,6 +56,7 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
