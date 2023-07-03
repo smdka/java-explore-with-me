@@ -50,7 +50,7 @@ public class CompilationsPublicController {
                         .getAll(null, null, null))
                         .withRel("getAllCompilations"),
                 linkTo(methodOn(CommentsPublicController.class)
-                        .findByEvent(null, null, null))
+                        .getByEvent(null, null, null))
                         .withSelfRel());
 
         log.info("Response body: {}", response);

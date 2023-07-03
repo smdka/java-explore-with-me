@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+//TODO переделать на MapStruct
 public class EventMapper {
 
     private EventMapper() {

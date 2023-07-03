@@ -21,6 +21,7 @@
 		<module>ewm-statistic</module>
 		<module>ewm-main</module>
 		<module>configserver</module>
+		<module>eurekaserver</module>
 	</modules>
 
 	<properties>

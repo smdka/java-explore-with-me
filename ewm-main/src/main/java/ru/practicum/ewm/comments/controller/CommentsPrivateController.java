@@ -60,7 +60,7 @@ public class CommentsPrivateController {
                         .getById(userId, commentId))
                         .withSelfRel(),
                 linkTo(methodOn(CommentsPublicController.class)
-                        .findByEvent(null, null, null))
+                        .getByEvent(null, null, null))
                         .withRel("getCommentsByEvent"));
 
         return response;
