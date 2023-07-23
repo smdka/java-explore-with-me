@@ -34,7 +34,7 @@ services:
     build: ./ewm-main
     container_name: ewm-main
     ports:
-      - "8180:8080"
+      - "8180:8180"
     depends_on:
       - stats-server
       - ewm-db
