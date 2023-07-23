@@ -1,8 +1,11 @@
 package ru.practicum.ewm.events.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.stream.messaging.Source;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.StatisticClient;
@@ -44,6 +47,11 @@ public class EventServiceImpl implements EventService {
     private final StatisticClient statisticClient;
 
     private final LocationRepository locationRepository;
+
+    private final Source source;
+
+    @Value("${spring.application.name}")
+    private String appName;
 
     public static final String EVENT_NOT_FOUND_MSG = "Событие с id=%s не найдено";
     private static final String OPERATION_EXCEPTION_MSG = "Field: eventDate. Error: должно содержать дату, " +
@@ -130,7 +138,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public Collection<EventDto> getPublicEvents(EventsPublicCriteria eventsPublicCriteria, String ip, String url) {
-        createNewHit(ip, url);
+        sendNewHitMessage(ip, url);
 
         Pageable pageable = PageRequest.of(eventsPublicCriteria.getFrom(), eventsPublicCriteria.getSize());
         List<Event> events = eventRepository.findAllPublic(
@@ -159,7 +167,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public EventDto getPublicEventById(Long eventId, String ip, String url) {
-        createNewHit(ip, url);
+        sendNewHitMessage(ip, url);
 
         Event event = getEventByEventIdAndState(eventId);
         Map<String, Long> eventViewsMap = getEventViewsMap(getEventsViewsList(List.of(event)));
@@ -235,10 +243,8 @@ public class EventServiceImpl implements EventService {
         return statisticClient.getStats(start, end, eventUris, false);
     }
 
-    private void createNewHit(String ip, String url) {
-        String serviceName = "ewm-main-service";
-
-        statisticClient.addHit(new EndpointHitDto(serviceName, url, ip, LocalDateTime.now()));
+    private void sendNewHitMessage(String ip, String url) {
+        source.output().send(MessageBuilder.withPayload(new EndpointHitDto(appName, url, ip, LocalDateTime.now())).build());
     }
 
     private Collection<EventDto> sortEvents(SortBy sortBy, List<EventDto> eventDtos) {
