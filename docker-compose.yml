@@ -4,13 +4,15 @@ services:
     build: ./ewm-statistic/service
     container_name: ewm-stats
     ports:
-      - "9090:9090"
+      - "9190:9090"
     depends_on:
       - stats-db
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://stats-db:5432/statistic
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
+    networks:
+      - backend
 
   stats-db:
     image: postgres:14-alpine
@@ -23,6 +25,10 @@ services:
       - POSTGRES_DB=statistic
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
+    networks:
+      backend:
+        aliases:
+          - "stats-db"
 
   ewm-service:
     build: ./ewm-main
@@ -37,6 +43,8 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/ewm
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
+    networks:
+      - backend
 
   ewm-db:
     image: postgres:14-alpine
@@ -49,6 +57,51 @@ services:
       - POSTGRES_DB=ewm
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
+    networks:
+      backend:
+        aliases:
+          - "main-db"
+
+  configserver:
+    build: ./configserver
+    container_name: configserver
+    ports:
+      - "8071:8071"
+    networks:
+      backend:
+        aliases:
+          - "configserver"
+
+  eurekaserver:
+    build: ./eurekaserver
+    container_name: eurekaserver
+    ports:
+      - "8070:8070"
+    depends_on:
+      eureka-db:
+        condition: service_healthy
+      configserver:
+        condition: service_started
+    networks:
+      backend:
+        aliases:
+          - "eurekaserver"
+
+  eureka-db:
+    image: postgres:14-alpine
+    volumes:
+      - /var/lib/postgresql/data/
+    container_name: eureka-db
+    ports:
+      - "6543:5432"
+    environment:
+      - POSTGRES_DB=eureka
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+    networks:
+      backend:
+        aliases:
+          - "eureka-db"
 
   prometheus:
     image: prom/prometheus:latest
@@ -93,6 +146,7 @@ services:
       - KAFKA_ADVERTISED_PORT=9092
       - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
       - KAFKA_CREATE_TOPICS=dresses:1:1,ratings:1:1
+      - ALLOW_PLAINTEXT_LISTENER=yes
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
     depends_on:
@@ -114,12 +168,37 @@ services:
   keycloak:
     image: bitnami/keycloak
     restart: always
+    depends_on:
+      - keycloak-db
     environment:
-      KEYCLOAK_USER: admin
-      KEYCLOAK_PASSWORD: admin
+      KEYCLOAK_ADMIN_USER: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KEYCLOAK_DATABASE_HOST: keycloak-db
+      KEYCLOAK_DATABASE_USER: root
+      KEYCLOAK_DATABASE_PASSWORD: root
     ports:
       - "8080:8080"
     networks:
       backend:
         aliases:
           - "keycloak"
+
+  keycloak-db:
+    image: postgres:14-alpine
+    volumes:
+      - /var/lib/postgresql/data/
+    container_name: keycloak-db
+    ports:
+      - "6544:5432"
+    environment:
+      - POSTGRES_DB=bitnami_keycloak
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+    networks:
+      backend:
+        aliases:
+          - "keycloak-db"
+
+networks:
+  backend:
+    driver: bridge

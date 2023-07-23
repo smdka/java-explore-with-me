@@ -5,4 +5,4 @@ scrape_configs:
   - job_name: 'ewm-main'
     metrics_path: '/actuator/prometheus'
     static_configs:
-      - targets: ['ewm-main:8080']
+      - targets: ['ewm-main:8180']

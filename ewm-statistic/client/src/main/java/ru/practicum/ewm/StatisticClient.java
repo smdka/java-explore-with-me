@@ -3,7 +3,6 @@ package ru.practicum.ewm;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -20,9 +19,9 @@ import java.util.Map;
 @Component
 public class StatisticClient extends BaseClient {
     @Autowired
-    public StatisticClient(RestTemplateBuilder builder, @Value("${statistic-server.url}")String serverUrl) {
+    public StatisticClient(RestTemplateBuilder builder) {
         super(builder
-                .uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl))
+                .uriTemplateHandler(new DefaultUriBuilderFactory("http://ewm-stats"))
                 .requestFactory(HttpComponentsClientHttpRequestFactory::new)
                 .build());
     }
