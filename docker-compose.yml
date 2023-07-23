@@ -28,7 +28,7 @@ services:
     build: ./ewm-main
     container_name: ewm-main
     ports:
-      - "8080:8080"
+      - "8180:8080"
     depends_on:
       - stats-server
       - ewm-db
@@ -85,5 +85,16 @@ services:
       backend:
         aliases:
           - "redis"
-
-
+          
+  keycloak:
+    image: bitnami/keycloak
+    restart: always
+    environment:
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+    ports:
+      - "8080:8080"
+    networks:
+      backend:
+        aliases:
+          - "keycloak"
