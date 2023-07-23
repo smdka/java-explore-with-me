@@ -245,7 +245,6 @@ public class EventServiceImpl implements EventService {
 
     private void sendNewHitMessage(String ip, String url) {
         source.output().send(MessageBuilder.withPayload(new EndpointHitDto(appName, url, ip, LocalDateTime.now())).build());
-//        statisticClient.addHit(new EndpointHitDto(appName, url, ip, LocalDateTime.now()));
     }
 
     private Collection<EventDto> sortEvents(SortBy sortBy, List<EventDto> eventDtos) {
