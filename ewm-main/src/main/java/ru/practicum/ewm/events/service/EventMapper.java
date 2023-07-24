@@ -18,6 +18,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 //TODO переделать на MapStruct
+//TODO переделать все мапперы MapStruct на componentModel=spring
 public class EventMapper {
 
     private EventMapper() {
