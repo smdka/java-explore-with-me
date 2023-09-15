@@ -34,4 +34,4 @@ TODO:
 - Поддержка Resilience4j Retry
 - Поддержка Keycloak через Spring Security: добавлены роли пользователей и конфигурация
 - Оптимизация Docker-образов с помощью Buildpacks
-- Тесты
+- Тесты (Testcontainers)
