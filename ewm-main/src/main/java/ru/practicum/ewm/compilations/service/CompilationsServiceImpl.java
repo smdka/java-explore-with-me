@@ -38,10 +38,9 @@ public class CompilationsServiceImpl implements CompilationsService {
 
     @Override
     public CompilationDto getById(Long compId) {
-        Compilation compilation = compRepository.findById(compId)
+        return compRepository.findById(compId)
+                .map(CompilationMapper.MAP::toDto)
                 .orElseThrow(() -> new NotFoundException(String.format(COMP_NOT_FOUND_MSG, compId)));
-
-        return CompilationMapper.MAP.toDto(compilation);
     }
 
     @Override
@@ -61,6 +60,7 @@ public class CompilationsServiceImpl implements CompilationsService {
     public CompilationDto update(Long compId, NewCompilationDto newCompilationDto) {
         Compilation compilation = compRepository.findById(compId)
                 .orElseThrow(() -> new NotFoundException(String.format(COMP_NOT_FOUND_MSG, compId)));
+
         Collection<Event> events = eventRepository.findAllById(newCompilationDto.getEvents());
 
         updateCompilation(newCompilationDto, compilation, events);

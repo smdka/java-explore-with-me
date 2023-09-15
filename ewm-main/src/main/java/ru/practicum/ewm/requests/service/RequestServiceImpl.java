@@ -159,7 +159,8 @@ public class RequestServiceImpl implements RequestService {
     }
 
     private void updateRequests(NewRequestUpdateDto newRequestUpdateDto,
-                                RequestUpdateDto requestUpdateDto, Event event) {
+                                RequestUpdateDto requestUpdateDto,
+                                Event event) {
         if (event.getParticipantLimit().equals(0) || !event.getRequestModeration()) {
             return;
         }
@@ -177,9 +178,10 @@ public class RequestServiceImpl implements RequestService {
         });
     }
 
-    private void validateRequestStatus(NewRequestUpdateDto newRequestUpdateDto, Request request) {
-        if (request.getStatus().equals(State.CONFIRMED) &&
-                newRequestUpdateDto.getStatus().equals(State.REJECTED)) {
+    private void validateRequestStatus(NewRequestUpdateDto newRequestUpdateDto,
+                                       Request request) {
+
+        if (request.getStatus().equals(State.CONFIRMED) && newRequestUpdateDto.getStatus().equals(State.REJECTED)) {
             throw new OperationException(REQUEST_LIMIT_EXCEPTION_MSG);
         }
     }
@@ -187,6 +189,7 @@ public class RequestServiceImpl implements RequestService {
     private void updateRequestStatusAndSave(NewRequestUpdateDto newRequestUpdateDto,
                                             RequestUpdateDto requestUpdateDto,
                                             Event event, Request request) {
+
         if (event.getConfirmedRequests() >= event.getParticipantLimit()
                 || newRequestUpdateDto.getStatus().equals(State.REJECTED)) {
             setRequestStatusAndSave(requestUpdateDto.getRejectedRequests(), request, State.REJECTED);

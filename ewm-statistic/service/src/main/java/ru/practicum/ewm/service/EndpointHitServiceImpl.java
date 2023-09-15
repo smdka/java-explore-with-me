@@ -27,16 +27,16 @@ public class EndpointHitServiceImpl implements EndpointHitService {
     @Override
     public Collection<ViewStatsDto> get(LocalDateTime start, LocalDateTime end, List<String> uris, boolean unique) {
         if (unique) {
-            return isEmptyOrNull(uris)
+            return isCollectionEmptyOrNull(uris)
                     ? repository.findByDateUniqueIp(start, end)
                     : repository.findByDateAndUrisUniqueIp(start, end, uris);
         }
-        return isEmptyOrNull(uris)
+        return isCollectionEmptyOrNull(uris)
                 ? repository.findByDate(start, end)
                 : repository.findByDateAndUris(start, end, uris);
     }
 
-    private <T> boolean isEmptyOrNull(List<T> list) {
-        return list == null || list.isEmpty();
+    private <T> boolean isCollectionEmptyOrNull(Collection<T> collection) {
+        return collection == null || collection.isEmpty();
     }
 }

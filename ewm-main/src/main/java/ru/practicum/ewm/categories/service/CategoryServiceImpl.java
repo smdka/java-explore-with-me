@@ -3,6 +3,7 @@ package ru.practicum.ewm.categories.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.categories.dto.CategoryDto;
@@ -14,7 +15,6 @@ import ru.practicum.ewm.exceptions.NotFoundException;
 import ru.practicum.ewm.exceptions.OperationException;
 
 import java.util.Collection;
-import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -37,13 +37,12 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryDto getById(Long categoryId, Integer from, Integer size) {
         Pageable pageable = PageRequest.of(from, size);
-        List<Category> categories = categoryRepository.findAllById(categoryId, pageable);
 
-        if (categories.isEmpty()) {
-            throw new NotFoundException(String.format(CATEGORY_NOT_FOUND_MSG, categoryId));
-        }
-
-        return CategoryMapper.MAP.toDto(categories.get(0));
+        return categoryRepository.findAllById(categoryId, pageable)
+                .stream()
+                .findFirst()
+                .map(CategoryMapper.MAP::toDto)
+                .orElseThrow(() -> new NotFoundException(String.format(CATEGORY_NOT_FOUND_MSG, categoryId)));
     }
 
     @Override

@@ -18,6 +18,7 @@ import ru.practicum.ewm.users.repository.UserRepository;
 import ru.practicum.ewm.users.service.UserServiceImpl;
 
 import java.util.Collection;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
