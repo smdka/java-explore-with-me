@@ -59,20 +59,19 @@ public class CompilationsServiceImpl implements CompilationsService {
     @Override
     @Transactional
     public CompilationDto update(Long compId, NewCompilationDto newCompilationDto) {
-        Compilation compilation = compRepository.findById(compId)
+        return compRepository.findById(compId)
+                .map(compilation -> updateCompilation(newCompilationDto, compilation))
                 .orElseThrow(() -> new NotFoundException(String.format(COMP_NOT_FOUND_MSG, compId)));
-
-        Collection<Event> events = eventRepository.findAllById(newCompilationDto.getEvents());
-
-        updateCompilation(newCompilationDto, compilation, events);
-
-        return CompilationMapper.MAP.toDto(compilation);
     }
 
-    private void updateCompilation(NewCompilationDto newCompilationDto, Compilation compilation, Collection<Event> events) {
+    private CompilationDto updateCompilation(NewCompilationDto newCompilationDto, Compilation compilation) {
+        List<Event> events = eventRepository.findAllById(newCompilationDto.getEvents());
+
         compilation.setTitle(Objects.requireNonNullElse(newCompilationDto.getTitle(), compilation.getTitle()));
         compilation.setPinned(Objects.requireNonNullElse(newCompilationDto.getPinned(), compilation.getPinned()));
         compilation.setEvents(new HashSet<>(events));
+
+        return CompilationMapper.MAP.toDto(compilation);
     }
 
     @Override
