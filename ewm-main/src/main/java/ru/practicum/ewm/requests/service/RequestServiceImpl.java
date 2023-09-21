@@ -37,14 +37,14 @@ public class RequestServiceImpl implements RequestService {
     @Transactional
     public RequestDto add(Long userId, Long eventId) {
         return eventRepository.findById(eventId)
-                .filter(event -> isValidEventForRequest(userId, event)
+                .filter(event -> isEventAvailableForRequest(userId, event)
                         && !isRequestAlreadyExists(userId, eventId)
-                        && !isParticipantsLimitExceeded(eventId, event))
+                        && isRequestsLimitNotExceeded(eventId, event))
                 .map(event -> saveRequest(eventId, userId, event.getRequestModeration()))
                 .orElseThrow(() -> new OperationException(String.format(EVENT_NOT_FOUND_MESSAGE, eventId)));
     }
 
-    private boolean isValidEventForRequest(Long userId, Event event) {
+    private boolean isEventAvailableForRequest(Long userId, Event event) {
         if (event.getInitiator().getId().equals(userId)) {
             throw new OperationException(REQUEST_SAME_USER_ID_EXCEPTION_MSG);
         }
@@ -63,12 +63,12 @@ public class RequestServiceImpl implements RequestService {
         return true;
     }
 
-    private boolean isParticipantsLimitExceeded(Long eventId, Event event) {
+    private boolean isRequestsLimitNotExceeded(Long eventId, Event event) {
         if (requestRepository.countByEventId(eventId) >= event.getParticipantLimit()) {
             throw new OperationException(REQUEST_LIMIT_EXCEPTION_MSG);
         }
 
-        return false;
+        return true;
     }
 
     private RequestDto saveRequest(Long eventId, Long userId, boolean isRequestedModeration) {
@@ -103,49 +103,26 @@ public class RequestServiceImpl implements RequestService {
     @Override
     @Transactional
     public RequestUpdateDto update(Long userId, Long eventId, NewRequestUpdateDto newRequestUpdateDto) {
-//        validateNewRequestUpdateDto(newRequestUpdateDto);
-//
-//        RequestUpdateDto requestUpdateDto = new RequestUpdateDto(new ArrayList<>(), new ArrayList<>());
-//        Event event = findEventById(eventId);
-//
-//        checkEventParticipantLimit(event);
-//
-//        updateRequests(newRequestUpdateDto, requestUpdateDto, event);
-//
-//        return requestUpdateDto;
-
-        Optional.ofNullable(newRequestUpdateDto)
-                .ifPresentOrElse(requestUpdateDto -> eventRepository.findById(eventId)
-                                .filter(this::isEventParticipantLimitExceeded)
-                                .map(event -> updateRequests(newRequestUpdateDto, new RequestUpdateDto(new ArrayList<>(), new ArrayList<>()), event))
-                                .orElseThrow(() -> new NotFoundException(String.format(EVENT_NOT_FOUND_MESSAGE, eventId))),
-                        () -> {
-                            throw new OperationException(REQUEST_LIMIT_EXCEPTION_MSG);
-                        });
+        return Optional.ofNullable(newRequestUpdateDto)
+                .map(requestUpdateDto -> eventRepository.findById(eventId)
+                        .filter(this::isEventParticipantLimitNotExceeded)
+                        .map(event -> updateRequests(newRequestUpdateDto, new RequestUpdateDto(new ArrayList<>(), new ArrayList<>()), event))
+                        .orElseThrow(() -> new NotFoundException(String.format(EVENT_NOT_FOUND_MESSAGE, eventId))))
+                .orElseThrow(() -> new OperationException(REQUEST_LIMIT_EXCEPTION_MSG));
     }
 
-    private void validateNewRequestUpdateDto(NewRequestUpdateDto newRequestUpdateDto) {
-        if (newRequestUpdateDto == null) {
-            throw new OperationException(REQUEST_LIMIT_EXCEPTION_MSG);
-        }
-    }
-
-    private Event findEventById(Long eventId) {
-        return eventRepository.findById(eventId)
-                .orElseThrow(() -> new OperationException(String.format(EVENT_NOT_FOUND_MESSAGE, eventId)));
-    }
-
-    private boolean isEventParticipantLimitExceeded(Event event) {
+    private boolean isEventParticipantLimitNotExceeded(Event event) {
         if (event.getConfirmedRequests() >= event.getParticipantLimit()) {
             throw new OperationException(REQUEST_LIMIT_EXCEPTION_MSG);
         }
 
-        return false;
+        return true;
     }
 
     private RequestUpdateDto updateRequests(NewRequestUpdateDto newRequestUpdateDto,
                                             RequestUpdateDto requestUpdateDto,
                                             Event event) {
+
         if (event.getParticipantLimit().equals(0) || !event.getRequestModeration()) {
             return requestUpdateDto;
         }
@@ -165,9 +142,7 @@ public class RequestServiceImpl implements RequestService {
         return requestUpdateDto;
     }
 
-    private void validateRequestStatus(NewRequestUpdateDto newRequestUpdateDto,
-                                       Request request) {
-
+    private void validateRequestStatus(NewRequestUpdateDto newRequestUpdateDto, Request request) {
         if (request.getStatus().equals(State.CONFIRMED) && newRequestUpdateDto.getStatus().equals(State.REJECTED)) {
             throw new OperationException(REQUEST_LIMIT_EXCEPTION_MSG);
         }
@@ -177,19 +152,15 @@ public class RequestServiceImpl implements RequestService {
                                             RequestUpdateDto requestUpdateDto,
                                             Event event, Request request) {
 
-        if (event.getConfirmedRequests() >= event.getParticipantLimit()
-                || newRequestUpdateDto.getStatus().equals(State.REJECTED)) {
+        if (event.getConfirmedRequests() >= event.getParticipantLimit() || newRequestUpdateDto.getStatus().equals(State.REJECTED)) {
             setRequestStatusAndSave(requestUpdateDto.getRejectedRequests(), request, State.REJECTED);
         } else {
-            setRequestStatusAndSave(requestUpdateDto.getConfirmedRequests(),
-                    request, newRequestUpdateDto.getStatus());
-
+            setRequestStatusAndSave(requestUpdateDto.getConfirmedRequests(), request, newRequestUpdateDto.getStatus());
             increaseEventConfirmedRequests(event);
         }
     }
 
-    private void setRequestStatusAndSave(List<RequestDto> updatedRequests,
-                                         Request request, State status) {
+    private void setRequestStatusAndSave(List<RequestDto> updatedRequests, Request request, State status) {
         request.setStatus(status);
 
         requestRepository.save(request);
