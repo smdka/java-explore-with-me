@@ -27,6 +27,7 @@ public class CompilationsServiceImpl implements CompilationsService {
     private final CompilationRepository compRepository;
 
     private final EventRepository eventRepository;
+
     private static final String COMP_NOT_FOUND_MSG = "Подборка с id=%s не найдена";
 
     @Override
@@ -77,9 +78,9 @@ public class CompilationsServiceImpl implements CompilationsService {
     @Override
     @Transactional
     public void delete(Long compId) {
-        if (!compRepository.existsById(compId)) {
-            throw new NotFoundException(String.format(COMP_NOT_FOUND_MSG, compId));
-        }
-        compRepository.deleteById(compId);
+        compRepository.findById(compId)
+                .ifPresentOrElse(comp -> compRepository.deleteById(compId), () -> {
+                    throw new NotFoundException(String.format(COMP_NOT_FOUND_MSG, compId));
+                });
     }
 }

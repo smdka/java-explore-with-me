@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.ewm.events.dto.EventDto;
 import ru.practicum.ewm.events.dto.EventsPublicCriteria;
+import ru.practicum.ewm.events.dto.NewEventDto;
 import ru.practicum.ewm.events.service.EventService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -54,9 +55,6 @@ public class EventsPublicController {
                 linkTo(methodOn(EventsPrivateController.class)
                         .getByUserIdAndEventId(null, null))
                         .withRel("getEventByUserIdAndEventId"),
-                linkTo(methodOn(EventsPrivateController.class)
-                        .post(null, null))
-                        .withRel("createEvent"),
                 linkTo(methodOn(EventsPrivateController.class)
                         .updateByUserIdAndEventId(null, eventId, null))
                         .withRel("updateEvent"),

@@ -14,6 +14,7 @@ import ru.practicum.ewm.users.model.User;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -121,11 +122,19 @@ public class EventMapper {
     }
 
     public static List<EventDto> toDto(List<Event> events, Map<String, Long> eventViews) {
-        return events.stream().map(event -> {
-            Long hits = eventViews.get(String.format("/events/%s", event.getId()));
+        return events.stream()
+                .map(event -> {
+                    Long hits = eventViews.get(String.format("/events/%s", event.getId()));
 
-            return toDto(event, hits != null ? hits : 0);
-        }).collect(Collectors.toList());
+                    return toDto(event, Objects.requireNonNullElse(hits, 0L));
+                })
+                .collect(Collectors.toList());
+    }
+
+    public static EventDto toDto(Event event, Map<String, Long> eventViews) {
+        Long hits = eventViews.get(String.format("/events/%s", event.getId()));
+
+        return toDto(event, Objects.requireNonNullElse(hits, 0L));
     }
 
     public static List<EventDto> toDto(Set<Event> events) {

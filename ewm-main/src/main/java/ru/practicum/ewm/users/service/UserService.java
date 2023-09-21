@@ -11,5 +11,7 @@ public interface UserService {
 
     Collection<UserDto> getAll(List<Long> ids, Integer from, Integer size);
 
+    UserDto getById(Long userId);
+
     void delete(Long userId);
 }

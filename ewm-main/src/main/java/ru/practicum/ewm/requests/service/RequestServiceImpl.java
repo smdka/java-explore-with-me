@@ -1,8 +1,6 @@
 package ru.practicum.ewm.requests.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.events.dto.State;
@@ -19,8 +17,7 @@ import ru.practicum.ewm.requests.repository.RequestRepository;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.exact;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -30,67 +27,54 @@ public class RequestServiceImpl implements RequestService {
     private final EventRepository eventRepository;
 
     private static final String REQUEST_ALREADY_EXISTS_MSG = "Пользователь с id=%d уже создал запрос на участие в событии с id=%d";
-
-    private static final String REQUEST_SAME_USER_ID_EXCEPTION_MSG =
-            "Нельзя создать запрос для собственного события";
-    private static final String REQUEST_STATE_EXCEPTION_MSG =
-            "Нельзя создать запрос для неопубликованного события";
-    private static final String REQUEST_LIMIT_EXCEPTION_MSG =
-            "Нельзя создать запрос из-за ограничения количества участников события";
-    private static final String REQUEST_NOT_FOUND_EXCEPTION_MESSAGE =
-            "Запрос с id=%s не найден";
+    private static final String REQUEST_SAME_USER_ID_EXCEPTION_MSG = "Нельзя создать запрос для собственного события";
+    private static final String REQUEST_STATE_EXCEPTION_MSG = "Нельзя создать запрос для неопубликованного события";
+    private static final String REQUEST_LIMIT_EXCEPTION_MSG = "Нельзя создать запрос из-за ограничения количества участников события";
+    private static final String REQUEST_NOT_FOUND_EXCEPTION_MESSAGE = "Запрос с id=%s не найден";
     private static final String EVENT_NOT_FOUND_MESSAGE = "Событие с id=%s не найдено";
 
     @Override
     @Transactional
     public RequestDto add(Long userId, Long eventId) {
-        Event event = findEventById(eventId);
-
-        validateEventForRequest(userId, event);
-
-        checkIfRequestAlreadyExists(userId, eventId);
-
-        checkParticipantLimit(eventId, event);
-
-        return saveRequest(eventId, userId, event.getRequestModeration());
+        return eventRepository.findById(eventId)
+                .filter(event -> isValidEventForRequest(userId, event)
+                        && !isRequestAlreadyExists(userId, eventId)
+                        && !isParticipantsLimitExceeded(eventId, event))
+                .map(event -> saveRequest(eventId, userId, event.getRequestModeration()))
+                .orElseThrow(() -> new OperationException(String.format(EVENT_NOT_FOUND_MESSAGE, eventId)));
     }
 
-    private void validateEventForRequest(Long userId, Event event) {
-        validateEventInitiator(userId, event);
-        validateEventState(event);
-    }
-
-    private void validateEventInitiator(Long userId, Event event) {
+    private boolean isValidEventForRequest(Long userId, Event event) {
         if (event.getInitiator().getId().equals(userId)) {
             throw new OperationException(REQUEST_SAME_USER_ID_EXCEPTION_MSG);
         }
-    }
 
-    private void validateEventState(Event event) {
         if (!event.getState().equals(State.PUBLISHED)) {
             throw new OperationException(REQUEST_STATE_EXCEPTION_MSG);
         }
+
+        return true;
     }
 
-    private void checkParticipantLimit(Long eventId, Event event) {
+    private boolean isRequestAlreadyExists(Long userId, Long eventId) {
+        requestRepository.findByRequesterIdAndEventId(userId, eventId)
+                .orElseThrow(() -> new OperationException(String.format(REQUEST_ALREADY_EXISTS_MSG, userId, eventId)));
+
+        return true;
+    }
+
+    private boolean isParticipantsLimitExceeded(Long eventId, Event event) {
         if (requestRepository.countByEventId(eventId) >= event.getParticipantLimit()) {
             throw new OperationException(REQUEST_LIMIT_EXCEPTION_MSG);
         }
+
+        return false;
     }
 
-    private void checkIfRequestAlreadyExists(Long userId, Long eventId) {
-        ExampleMatcher requesterMatcher = ExampleMatcher.matchingAny()
-                .withIgnorePaths("id")
-                .withMatcher("requester_id", exact());
+    private RequestDto saveRequest(Long eventId, Long userId, boolean isRequestedModeration) {
+        Request request = RequestMapper.MAP.toModel(eventId, userId, isRequestedModeration ? State.PENDING : State.CONFIRMED);
 
-        Request request = new Request();
-        request.setRequesterId(userId);
-
-        Example<Request> example = Example.of(request, requesterMatcher);
-
-        if (requestRepository.exists(example)) {
-            throw new OperationException(String.format(REQUEST_ALREADY_EXISTS_MSG, userId, eventId));
-        }
+        return RequestMapper.MAP.toDto(requestRepository.save(request));
     }
 
     @Override
@@ -106,39 +90,38 @@ public class RequestServiceImpl implements RequestService {
     @Override
     @Transactional
     public RequestDto cancelRequest(Long userId, Long requestId) {
-        Request request = getRequestByRequesterIdAndId(userId, requestId);
-
-        request.setStatus(State.CANCELED);
-
-        return RequestMapper.MAP.toDto(request);
+        return requestRepository.findByRequesterIdAndId(userId, requestId)
+                .map(this::setRequestStatusToCanceled)
+                .orElseThrow(() -> new NotFoundException(String.format(REQUEST_NOT_FOUND_EXCEPTION_MESSAGE, requestId)));
     }
 
-    private Request getRequestByRequesterIdAndId(Long userId, Long requestId) {
-        return requestRepository.findByRequesterIdAndId(userId, requestId)
-                .orElseThrow(() -> new NotFoundException(String.format(REQUEST_NOT_FOUND_EXCEPTION_MESSAGE, requestId)));
+    private RequestDto setRequestStatusToCanceled(Request request) {
+        request.setStatus(State.CANCELED);
+        return RequestMapper.MAP.toDto(request);
     }
 
     @Override
     @Transactional
     public RequestUpdateDto update(Long userId, Long eventId, NewRequestUpdateDto newRequestUpdateDto) {
-        validateNewRequestUpdateDto(newRequestUpdateDto);
+//        validateNewRequestUpdateDto(newRequestUpdateDto);
+//
+//        RequestUpdateDto requestUpdateDto = new RequestUpdateDto(new ArrayList<>(), new ArrayList<>());
+//        Event event = findEventById(eventId);
+//
+//        checkEventParticipantLimit(event);
+//
+//        updateRequests(newRequestUpdateDto, requestUpdateDto, event);
+//
+//        return requestUpdateDto;
 
-        RequestUpdateDto requestUpdateDto = new RequestUpdateDto(new ArrayList<>(), new ArrayList<>());
-        Event event = findEventById(eventId);
-
-        checkEventParticipantLimit(event);
-
-        updateRequests(newRequestUpdateDto, requestUpdateDto, event);
-
-        return requestUpdateDto;
-    }
-
-
-    private RequestDto saveRequest(Long eventId, Long userId, Boolean isRequestedModeration) {
-        Request request = RequestMapper.MAP.toModel(eventId, userId,
-                isRequestedModeration ? State.PENDING : State.CONFIRMED);
-
-        return RequestMapper.MAP.toDto(requestRepository.save(request));
+        Optional.ofNullable(newRequestUpdateDto)
+                .ifPresentOrElse(requestUpdateDto -> eventRepository.findById(eventId)
+                                .filter(this::isEventParticipantLimitExceeded)
+                                .map(event -> updateRequests(newRequestUpdateDto, new RequestUpdateDto(new ArrayList<>(), new ArrayList<>()), event))
+                                .orElseThrow(() -> new NotFoundException(String.format(EVENT_NOT_FOUND_MESSAGE, eventId))),
+                        () -> {
+                            throw new OperationException(REQUEST_LIMIT_EXCEPTION_MSG);
+                        });
     }
 
     private void validateNewRequestUpdateDto(NewRequestUpdateDto newRequestUpdateDto) {
@@ -152,17 +135,19 @@ public class RequestServiceImpl implements RequestService {
                 .orElseThrow(() -> new OperationException(String.format(EVENT_NOT_FOUND_MESSAGE, eventId)));
     }
 
-    private void checkEventParticipantLimit(Event event) {
+    private boolean isEventParticipantLimitExceeded(Event event) {
         if (event.getConfirmedRequests() >= event.getParticipantLimit()) {
             throw new OperationException(REQUEST_LIMIT_EXCEPTION_MSG);
         }
+
+        return false;
     }
 
-    private void updateRequests(NewRequestUpdateDto newRequestUpdateDto,
-                                RequestUpdateDto requestUpdateDto,
-                                Event event) {
+    private RequestUpdateDto updateRequests(NewRequestUpdateDto newRequestUpdateDto,
+                                            RequestUpdateDto requestUpdateDto,
+                                            Event event) {
         if (event.getParticipantLimit().equals(0) || !event.getRequestModeration()) {
-            return;
+            return requestUpdateDto;
         }
 
         List<Long> requestIds = newRequestUpdateDto.getRequestIds();
@@ -176,6 +161,8 @@ public class RequestServiceImpl implements RequestService {
             validateRequestStatus(newRequestUpdateDto, request);
             updateRequestStatusAndSave(newRequestUpdateDto, requestUpdateDto, event, request);
         });
+
+        return requestUpdateDto;
     }
 
     private void validateRequestStatus(NewRequestUpdateDto newRequestUpdateDto,

@@ -3,7 +3,6 @@ package ru.practicum.ewm.categories.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.categories.dto.CategoryDto;
@@ -15,6 +14,7 @@ import ru.practicum.ewm.exceptions.NotFoundException;
 import ru.practicum.ewm.exceptions.OperationException;
 
 import java.util.Collection;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -35,12 +35,8 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryDto getById(Long categoryId, Integer from, Integer size) {
-        Pageable pageable = PageRequest.of(from, size);
-
-        return categoryRepository.findAllById(categoryId, pageable)
-                .stream()
-                .findFirst()
+    public CategoryDto getById(Long categoryId) {
+        return categoryRepository.findById(categoryId)
                 .map(CategoryMapper.MAP::toDto)
                 .orElseThrow(() -> new NotFoundException(String.format(CATEGORY_NOT_FOUND_MSG, categoryId)));
     }
@@ -56,25 +52,26 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public void delete(Long categoryId) {
-        if (eventRepository.findFirstByCategoryId(categoryId) != null) {
-            throw new OperationException(String.format(CATEGORY_HAS_RELATED_EVENTS_MSG, categoryId));
-        }
-
-        if (!categoryRepository.existsById(categoryId)) {
-            throw new NotFoundException(String.format(CATEGORY_NOT_FOUND_MSG, categoryId));
-        }
-
-        categoryRepository.deleteById(categoryId);
+        Optional.ofNullable(eventRepository.findByCategoryId(categoryId))
+                .ifPresentOrElse(event -> {
+                    throw new OperationException(String.format(CATEGORY_HAS_RELATED_EVENTS_MSG, categoryId));
+                }, () -> categoryRepository.findById(categoryId)
+                        .ifPresentOrElse(category -> categoryRepository.deleteById(categoryId),
+                                () -> {
+                                    throw new NotFoundException(String.format(CATEGORY_NOT_FOUND_MSG, categoryId));
+                                }));
     }
 
     @Override
     @Transactional
     public CategoryDto update(Long categoryId, NewCategoryDto newCategoryDto) {
-        Category category = categoryRepository.findById(categoryId)
+        return categoryRepository.findById(categoryId)
+                .map(category -> updateCategory(newCategoryDto, category))
                 .orElseThrow(() -> new NotFoundException(String.format(CATEGORY_NOT_FOUND_MSG, categoryId)));
+    }
 
+    private CategoryDto updateCategory(NewCategoryDto newCategoryDto, Category category) {
         category.setName(newCategoryDto.getName());
-
         return CategoryMapper.MAP.toDto(categoryRepository.save(category));
     }
 }

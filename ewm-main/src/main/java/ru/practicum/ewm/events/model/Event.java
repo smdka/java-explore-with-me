@@ -1,6 +1,7 @@
 package ru.practicum.ewm.events.model;
 
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 import ru.practicum.ewm.categories.model.Category;
 import ru.practicum.ewm.events.dto.State;
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @NamedEntityGraph(
         name = "event",
         attributeNodes = {
@@ -24,54 +26,55 @@ import java.time.LocalDateTime;
                 @NamedAttributeNode(value = "location"),
         }
 )
+
 public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    Long id;
 
     @Column(columnDefinition = "varchar(2000)", nullable = false)
-    private String annotation;
+    String annotation;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
-    private Category category;
+    Category category;
 
     @Column(name = "confirmed_requests", nullable = false)
-    private int confirmedRequests;
+    int confirmedRequests;
 
     @Column(name = "created_on", nullable = false)
     @CreationTimestamp
-    private LocalDateTime createdOn;
+    LocalDateTime createdOn;
 
     @Column(columnDefinition = "varchar(7000)", nullable = false)
-    private String description;
+    String description;
 
     @Column(name = "event_date", nullable = false)
-    private LocalDateTime eventDate;
+    LocalDateTime eventDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "initiator_id")
-    private User initiator;
+    User initiator;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "location_id")
-    private Location location;
+    Location location;
 
     @Column(nullable = false)
-    private Boolean paid;
+    Boolean paid;
 
     @Column(name = "participant_limit", nullable = false)
-    private Integer participantLimit;
+    Integer participantLimit;
 
     @Column(name = "published_on", nullable = false)
-    private LocalDateTime publishedOn = LocalDateTime.now();
+    LocalDateTime publishedOn = LocalDateTime.now();
 
     @Column(name = "request_moderation", nullable = false)
-    private Boolean requestModeration;
+    Boolean requestModeration;
 
     @Column(nullable = false)
-    private State state;
+    State state;
 
     @Column(nullable = false)
-    private String title;
+    String title;
 }

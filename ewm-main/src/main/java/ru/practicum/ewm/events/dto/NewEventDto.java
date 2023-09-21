@@ -32,6 +32,7 @@ public class NewEventDto {
     @NotNull
     LocationDto location;
 
+    @NotNull
     Boolean paid;
 
     @NotNull

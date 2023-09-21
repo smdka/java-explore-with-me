@@ -30,12 +30,10 @@ public class CategoriesPublicController {
     }
 
     @GetMapping("/{categoryId}")
-    public CategoryDto getCategoryById(@PathVariable Long categoryId,
-                                       @RequestParam(defaultValue = "0") Integer from,
-                                       @RequestParam(defaultValue = "10") Integer size) {
-        log.info("GET /categories/{}?from={}&size={}", categoryId, from, size);
+    public CategoryDto getCategoryById(@PathVariable Long categoryId) {
+        log.info("GET /categories/{}", categoryId);
 
-        CategoryDto response = categoryService.getById(categoryId, from, size);
+        CategoryDto response = categoryService.getById(categoryId);
 
         response.add(linkTo(methodOn(CategoriesAdminController.class)
                         .create(null))
@@ -47,10 +45,10 @@ public class CategoriesPublicController {
                         .deleteById(response.getId()))
                         .withRel("deleteCategory"),
                 linkTo(methodOn(CategoriesPublicController.class)
-                        .getCategories(from, size))
+                        .getCategories(null, null))
                         .withRel("getCategories"),
                 linkTo(methodOn(CategoriesPublicController.class)
-                        .getCategoryById(categoryId, from, size))
+                        .getCategoryById(categoryId))
                         .withSelfRel());
 
         log.info("Response: {}", response);

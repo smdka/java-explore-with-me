@@ -8,7 +8,7 @@ import java.util.Collection;
 public interface CategoryService {
     Collection<CategoryDto> getAll(Integer from, Integer size);
 
-    CategoryDto getById(Long categoryId, Integer from, Integer size);
+    CategoryDto getById(Long categoryId);
 
     CategoryDto add(NewCategoryDto newCategoryDto);
 

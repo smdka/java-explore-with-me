@@ -58,7 +58,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     Optional<Event> findEventByIdAndState(Long eventId, State state);
 
     @EntityGraph(value = "event")
-    Event findFirstByCategoryId(Long categoryId);
+    Event findByCategoryId(Long categoryId);
 
     @Modifying
     @Query("UPDATE Event e SET e.confirmedRequests = e.confirmedRequests + :increment WHERE e.id = :eventId")

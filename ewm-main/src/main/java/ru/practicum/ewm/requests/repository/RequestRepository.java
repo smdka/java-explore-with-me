@@ -18,6 +18,8 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
 
     Optional<Request> findByRequesterIdAndId(Long requesterId, Long id);
 
+    Optional<Request> findByRequesterIdAndEventId(Long requesterId, Long eventId);
+
     @Query("SELECT new ru.practicum.ewm.requests.model.RequestStat(r.eventId, COUNT(r.eventId)) " +
            "FROM Request r " +
            "WHERE r.eventId IN :ids " +
